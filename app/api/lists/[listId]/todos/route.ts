@@ -1,56 +1,62 @@
 import { NextResponse } from "next/server"
 import { List } from "@/app/types/List"
 import { Todo } from "@/app/types/Todo"
+import { randomUUID } from "crypto"
 
 const lists: Record<string, List> = {
   foo: {
     name: "Foo",
-    createdAt: new Date().toString(),
+    createdAt: "2023-08-24",
   },
   bar: {
     name: "Bar",
-    createdAt: new Date().toString(),
+    createdAt: "2023-08-24",
   },
 }
 
 const todos: Record<string, Todo[]> = {
   foo: [
     {
+      id: "1",
       isComplete: false,
       text: "Foo 1",
-      createdAt: new Date().toString(),
-      dueAt: new Date().toString(),
+      createdAt: "2023-08-24",
+      dueAt: "2023-08-24",
       list: "foo",
     },
     {
+      id: "2",
       isComplete: false,
       text: "Foo 2",
-      createdAt: new Date().toString(),
-      dueAt: new Date().toString(),
+      createdAt: "2023-08-24",
+      dueAt: "2023-08-24",
       list: "foo",
     },
   ],
   bar: [
     {
+      id: "3",
       isComplete: false,
       text: "Bar 1",
-      createdAt: new Date().toString(),
-      dueAt: new Date().toString(),
-      list: "Bar",
+      createdAt: "2023-08-24",
+      dueAt: "2023-08-24",
+      list: "bar",
     },
     {
+      id: "4",
       isComplete: false,
       text: "Bar 2",
-      createdAt: new Date().toString(),
-      dueAt: new Date().toString(),
-      list: "Bar",
+      createdAt: "2023-08-24",
+      dueAt: "2023-08-24",
+      list: "bar",
     },
     {
+      id: "5",
       isComplete: false,
       text: "Bar 3",
-      createdAt: new Date().toString(),
-      dueAt: new Date().toString(),
-      list: "Bar",
+      createdAt: "2023-08-24",
+      dueAt: "2023-08-24",
+      list: "bar",
     },
   ],
 }
@@ -86,10 +92,17 @@ export async function POST(
   const listId = params.listId
   const body = await request.json()
 
+  const now = new Date()
+
   const todo: Todo = {
+    id: randomUUID(),
     isComplete: false,
     text: body.text,
-    createdAt: new Date().toString(),
+    createdAt: now.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }),
     dueAt: body.dueAt ?? null,
     list: listId,
   }
@@ -101,4 +114,30 @@ export async function POST(
   todos[listId].push(todo)
 
   return NextResponse.json(todo)
+}
+
+export async function PATCH(
+  request: Request,
+  {
+    params,
+  }: {
+    params: { listId: string }
+  },
+) {
+  const listId = params.listId
+  const body = await request.json()
+
+  if (listId in todos) {
+    const todo = todos[listId].find((todo) => todo.id === body.id)
+
+    if (todo) {
+      Object.entries(body).forEach(([key, value]) => {
+        todo[key] = value
+      })
+    }
+
+    return NextResponse.json(todo)
+  } else {
+    return NextResponse.json(body)
+  }
 }

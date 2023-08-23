@@ -20,12 +20,18 @@
     "test:ci": "CI=true run-s test:lint test:types test:unit:ci test:serve"
   },
   "dependencies": {
+    "@chakra-ui/next-js": "^2.1.5",
+    "@chakra-ui/react": "^2.8.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@types/node": "20.5.2",
     "@types/react": "18.2.20",
     "@types/react-dom": "18.2.7",
     "classnames": "^2.3.2",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.19",
+    "framer-motion": "^10.16.1",
+    "lodash": "^4.17.21",
     "next": "13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
