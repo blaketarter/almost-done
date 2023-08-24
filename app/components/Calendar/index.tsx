@@ -17,8 +17,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 import classNames from "classnames"
 import { Box, Grid, GridItem } from "@chakra-ui/react"
 import styles from "./index.module.css"
-
-interface CalendarProps {}
+import { CalendarEvent } from "@/app/types/CalendarEvent"
 
 const getHeader = (
   activeDate: Date,
@@ -51,7 +50,15 @@ const getWeekDaysNames = (activeDate: Date) => {
         const dayName = format(addDays(weekStartDate, day), "E")
 
         return (
-          <GridItem key={dayName} h="50px" w="50px" className="day weekNames">
+          <GridItem
+            key={dayName}
+            h="50px"
+            w="50px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            className="day weekNames"
+          >
             {dayName}
           </GridItem>
         )
@@ -64,6 +71,7 @@ const generateDatesForCurrentWeek = (
   date: Date,
   selectedDate: Date,
   activeDate: Date,
+  events: CalendarEvent[],
   setSelectedDate: (newSelectedDate: Date) => unknown,
 ) => {
   const today = new Date()
@@ -71,12 +79,19 @@ const generateDatesForCurrentWeek = (
     <>
       {Array.from({ length: 7 }).map((_, day) => {
         const currentDate = addDays(date, day)
+        const currentDateEvents = events.filter((event) =>
+          isSameDay(event.date, currentDate),
+        )
 
         return (
           <GridItem
             h="50px"
             w="50px"
+            position="relative"
             key={day}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
             className={classNames("day", {
               [styles.inactiveDay]: !isSameMonth(currentDate, activeDate),
               [styles.selectedDay]: isSameDay(currentDate, selectedDate),
@@ -84,7 +99,26 @@ const generateDatesForCurrentWeek = (
             })}
             onClick={() => setSelectedDate(currentDate)}
           >
-            {format(currentDate, "d")}
+            <Box>{format(currentDate, "d")}</Box>
+            {currentDateEvents.length ? (
+              <Box
+                position="absolute"
+                top="50%"
+                left="50%"
+                transform="translate(-50%, 100%)"
+                background="cornflowerblue"
+                h="10px"
+                w="10px"
+                color="white"
+                borderRadius="50%"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                fontSize="8px"
+              >
+                {currentDateEvents.length}
+              </Box>
+            ) : null}
           </GridItem>
         )
       })}
@@ -95,6 +129,7 @@ const generateDatesForCurrentWeek = (
 const getDates = (
   selectedDate: Date,
   activeDate: Date,
+  events: CalendarEvent[],
   setSelectedDate: (newSelectedDate: Date) => unknown,
 ) => {
   const startOfTheSelectedMonth = startOfMonth(activeDate)
@@ -116,6 +151,7 @@ const getDates = (
               currentDate,
               selectedDate,
               activeDate,
+              events,
               setSelectedDate,
             )}
           </Fragment>
@@ -125,7 +161,11 @@ const getDates = (
   )
 }
 
-export default function Calendar(props: CalendarProps) {
+interface CalendarProps {
+  events?: CalendarEvent[]
+}
+
+export default function Calendar({ events = [] }: CalendarProps) {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [activeDate, setActiveDate] = useState(new Date())
 
@@ -133,7 +173,7 @@ export default function Calendar(props: CalendarProps) {
     <section>
       {getHeader(activeDate, setActiveDate)}
       {getWeekDaysNames(activeDate)}
-      {getDates(selectedDate, activeDate, setSelectedDate)}
+      {getDates(selectedDate, activeDate, events, setSelectedDate)}
     </section>
   )
 }
