@@ -1,3 +1,5 @@
+import TodoCalendar from "@/app/components/TodoCalendar"
+
 export default function CalendarDashboard() {
-  return <div></div>
+  return <TodoCalendar />
 }

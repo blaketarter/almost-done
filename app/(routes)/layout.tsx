@@ -1,3 +1,5 @@
+"use client"
+import { Box, HStack } from "@chakra-ui/react"
 import Nav from "../components/Nav"
 
 export default function Dashboard({
@@ -13,8 +15,14 @@ export default function Dashboard({
     <>
       <Nav />
       <main>
-        <section>{todos}</section>
-        <section>{calendar}</section>
+        <HStack w="100%">
+          <Box as="section" w="40%">
+            {todos}
+          </Box>
+          <Box as="section" w="60%">
+            {calendar}
+          </Box>
+        </HStack>
         {children}
       </main>
     </>
