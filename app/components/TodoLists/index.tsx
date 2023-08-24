@@ -3,20 +3,26 @@ import { Todo } from "@/app/types/Todo"
 import { VStack } from "@chakra-ui/react"
 import groupBy from "lodash/groupBy"
 import TodoList from "../TodoList"
+import { useQuery } from "@tanstack/react-query"
+import { getTodos } from "@/app/utils/getTodos"
 
 interface TodoListsParams {
   list?: string
-  todos: Todo[]
 }
 
-export default function TodoLists({ list, todos }: TodoListsParams) {
+export default function TodoLists({ list = "all" }: TodoListsParams) {
+  const { isLoading, isError, data, error } = useQuery<Todo[]>({
+    queryKey: ["todos", list],
+    queryFn: getTodos,
+  })
+
   return list === "all" ? (
     <VStack w="100%">
-      {Object.entries(groupBy(todos, "list")).map(([list, todos]) => (
+      {Object.entries(groupBy(data ?? [], "list")).map(([list, todos]) => (
         <TodoList key={list} list={list} todos={todos} />
       ))}
     </VStack>
   ) : (
-    <TodoList list={list} todos={todos} />
+    <TodoList list={list} todos={data ?? []} />
   )
 }

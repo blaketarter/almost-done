@@ -3,6 +3,9 @@ import { Todo } from "@/app/types/Todo"
 import TodoItem from "../TodoItem"
 import { Flex, Heading, Input, VStack } from "@chakra-ui/react"
 import { FormEvent, useCallback, useMemo, useRef, useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { createTodo } from "@/app/utils/createTodo"
+import { updateTodo } from "@/app/utils/updateTodo"
 
 interface TodoListParams {
   list?: string
@@ -10,16 +13,20 @@ interface TodoListParams {
 }
 
 export default function TodoList({ list, todos }: TodoListParams) {
-  const [newTodos, addNewTodo] = useState<Todo[]>([])
-  const [updatedTodos, addUpdatedTodo] = useState<Todo[]>([])
   const textRef = useRef<HTMLInputElement | null>(null)
-
-  const allTodos = useMemo(() => {
-    const unpatchedTodos = todos.concat(newTodos)
-    return updatedTodos.reduce((prev, curr) => {
-      return prev.map((prevTodo) => (prevTodo.id === curr.id ? curr : prevTodo))
-    }, unpatchedTodos)
-  }, [newTodos, todos, updatedTodos])
+  const queryClient = useQueryClient()
+  const createTodoMutation = useMutation({
+    mutationFn: createTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] })
+    },
+  })
+  const updateTodoMutation = useMutation({
+    mutationFn: updateTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] })
+    },
+  })
 
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -33,34 +40,20 @@ export default function TodoList({ list, todos }: TodoListParams) {
         createdAt: new Date().toString(),
       }
 
-      fetch(`http://localhost:3000/api/lists/${list}/todos`, {
-        method: "POST",
-        body: JSON.stringify(newTodo),
+      createTodoMutation.mutateAsync({ list, body: newTodo }).then(() => {
+        if (textRef.current) {
+          textRef.current.value = ""
+        }
       })
-        .then((res) => res.json())
-        .then((addedTodo: Todo) => {
-          addNewTodo((state) => [...state, addedTodo])
-
-          if (textRef.current) {
-            textRef.current.value = ""
-          }
-        })
     },
-    [list],
+    [createTodoMutation, list],
   )
 
   const onChange = useCallback(
     (updatedTodo: Todo) => {
-      fetch(`http://localhost:3000/api/lists/${list}/todos`, {
-        method: "PATCH",
-        body: JSON.stringify(updatedTodo),
-      })
-        .then((res) => res.json())
-        .then((patchedTodo: Todo) => {
-          addUpdatedTodo((state) => [...state, patchedTodo])
-        })
+      updateTodoMutation.mutate({ list, body: updatedTodo })
     },
-    [list],
+    [list, updateTodoMutation],
   )
 
   return (
@@ -68,7 +61,7 @@ export default function TodoList({ list, todos }: TodoListParams) {
       <Heading w="100%" as="h3" size="lg">
         {list}
       </Heading>
-      {allTodos.map((todo) => (
+      {todos.map((todo) => (
         <TodoItem key={todo.id} todo={todo} onChange={onChange} />
       ))}
       <Flex w="100%" align="start">

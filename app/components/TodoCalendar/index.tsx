@@ -4,15 +4,22 @@ import { Todo } from "@/app/types/Todo"
 import Calendar from "../Calendar"
 import { CalendarEvent } from "@/app/types/CalendarEvent"
 import { parse } from "date-fns"
+import { useQuery } from "@tanstack/react-query"
+import { getTodos } from "@/app/utils/getTodos"
 
 interface TodoCalendarProps {
-  todos?: Todo[]
+  list?: string
 }
 
-export default function TodoCalendar({ todos = [] }: TodoCalendarProps) {
+export default function TodoCalendar({ list = "all" }: TodoCalendarProps) {
+  const { isLoading, isError, data, error } = useQuery<Todo[]>({
+    queryKey: ["todos", list],
+    queryFn: getTodos,
+  })
+
   return (
     <Calendar
-      events={todos
+      events={(data ?? [])
         .filter((todo) => todo.dueAt)
         .map(
           (todo) =>
