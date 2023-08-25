@@ -1,10 +1,46 @@
 "use client"
-import { Heading } from "@chakra-ui/react"
+import { getLists } from "@/app/utils/getLists"
+import { Box, HStack, Heading, Select } from "@chakra-ui/react"
+import { useQuery } from "@tanstack/react-query"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 export default function Nav() {
+  const searchParams = useSearchParams()
+  const list = searchParams.get("list") ?? "all"
+
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const { isLoading, isError, data, error } = useQuery<string[]>({
+    queryKey: ["lists", "all"],
+    queryFn: getLists,
+  })
+
   return (
     <nav>
-      <Heading as="h1">Todos Calendar App</Heading>
+      <HStack>
+        <Heading as="h1">Todos Calendar App</Heading>
+        <Box w="200px">
+          <Select
+            defaultValue={list}
+            onChange={(e) => {
+              router.replace(`${pathname.split("?")[0]}?list=${e.target.value}`)
+            }}
+          >
+            {data?.length ? (
+              data.map((list) => (
+                <option key={list} value={list}>
+                  {list}
+                </option>
+              ))
+            ) : (
+              <option key={list} value={list}>
+                {list}
+              </option>
+            )}
+          </Select>
+        </Box>
+      </HStack>
     </nav>
   )
 }
