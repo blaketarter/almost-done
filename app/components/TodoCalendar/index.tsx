@@ -5,7 +5,7 @@ import Calendar from "../Calendar"
 import { CalendarEvent } from "@/app/types/CalendarEvent"
 import { parse } from "date-fns"
 import { useQuery } from "@tanstack/react-query"
-import { getTodos } from "@/app/utils/getTodos"
+import { productionAPIService } from "@/app/services/API"
 
 interface TodoCalendarProps {
   list?: string
@@ -14,7 +14,7 @@ interface TodoCalendarProps {
 export default function TodoCalendar({ list = "all" }: TodoCalendarProps) {
   const { isLoading, isError, data, error } = useQuery<Todo[]>({
     queryKey: ["todos", list],
-    queryFn: getTodos,
+    queryFn: productionAPIService.getTodos,
   })
 
   return (

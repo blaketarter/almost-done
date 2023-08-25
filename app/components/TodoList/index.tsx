@@ -4,8 +4,7 @@ import TodoItem from "../TodoItem"
 import { Flex, Heading, Input, VStack } from "@chakra-ui/react"
 import { FormEvent, useCallback, useMemo, useRef, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { createTodo } from "@/app/utils/createTodo"
-import { updateTodo } from "@/app/utils/updateTodo"
+import { productionAPIService } from "@/app/services/API"
 
 interface TodoListParams {
   list?: string
@@ -16,13 +15,13 @@ export default function TodoList({ list, todos }: TodoListParams) {
   const textRef = useRef<HTMLInputElement | null>(null)
   const queryClient = useQueryClient()
   const createTodoMutation = useMutation({
-    mutationFn: createTodo,
+    mutationFn: productionAPIService.createTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] })
     },
   })
   const updateTodoMutation = useMutation({
-    mutationFn: updateTodo,
+    mutationFn: productionAPIService.updateTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] })
     },

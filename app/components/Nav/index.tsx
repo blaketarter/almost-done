@@ -1,5 +1,5 @@
 "use client"
-import { getLists } from "@/app/utils/getLists"
+import { productionAPIService } from "@/app/services/API"
 import { Box, HStack, Heading, Select } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -13,7 +13,7 @@ export default function Nav() {
 
   const { isLoading, isError, data, error } = useQuery<string[]>({
     queryKey: ["lists", "all"],
-    queryFn: getLists,
+    queryFn: productionAPIService.getLists,
   })
 
   return (
