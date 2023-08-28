@@ -1,4 +1,4 @@
-import { productionAPIService } from "@/app/services/API"
+import apiService from "@/app/services/API"
 import getQueryClient from "@/app/utils/getQueryClient"
 import { dehydrate, Hydrate } from "@tanstack/react-query"
 import { ReactNode } from "react"
@@ -13,7 +13,7 @@ export default async function HydratedTodos({
   const queryClient = getQueryClient()
   await queryClient.prefetchQuery(
     ["todos", list],
-    productionAPIService.getTodos,
+    apiService.getTodos,
   )
   const dehydratedState = dehydrate(queryClient)
 

@@ -18,6 +18,7 @@ import classNames from "classnames"
 import { Box, Grid, GridItem } from "@chakra-ui/react"
 import styles from "./index.module.css"
 import { CalendarEvent } from "@/app/types/CalendarEvent"
+import getCurrentDate from "@/app/utils/getCurrentDate"
 
 const getHeader = (
   activeDate: Date,
@@ -25,7 +26,10 @@ const getHeader = (
 ) => {
   return (
     <div className="header">
-      <div className="todayButton" onClick={() => setActiveDate(new Date())}>
+      <div
+        className="todayButton"
+        onClick={() => setActiveDate(getCurrentDate())}
+      >
         Today
       </div>
       <ChevronLeftIcon
@@ -74,7 +78,7 @@ const generateDatesForCurrentWeek = (
   events: CalendarEvent[],
   setSelectedDate: (newSelectedDate: Date) => unknown,
 ) => {
-  const today = new Date()
+  const today = getCurrentDate()
   return (
     <>
       {Array.from({ length: 7 }).map((_, day) => {
@@ -166,8 +170,8 @@ interface CalendarProps {
 }
 
 export default function Calendar({ events = [] }: CalendarProps) {
-  const [selectedDate, setSelectedDate] = useState(new Date())
-  const [activeDate, setActiveDate] = useState(new Date())
+  const [selectedDate, setSelectedDate] = useState(getCurrentDate())
+  const [activeDate, setActiveDate] = useState(getCurrentDate())
 
   return (
     <section>

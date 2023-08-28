@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { List } from "@/app/types/List"
 import { Todo } from "@/app/types/Todo"
 import { randomUUID } from "crypto"
+import getCurrentDate from "@/app/utils/getCurrentDate"
 
 const lists: Record<string, List> = {
   foo: {
@@ -92,7 +93,7 @@ export async function POST(
   const listId = params.listId
   const body = await request.json()
 
-  const now = new Date()
+  const now = getCurrentDate()
 
   const todo: Todo = {
     id: randomUUID(),

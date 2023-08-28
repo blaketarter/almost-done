@@ -4,7 +4,7 @@ import { VStack } from "@chakra-ui/react"
 import groupBy from "lodash/groupBy"
 import TodoList from "../TodoList"
 import { useQuery } from "@tanstack/react-query"
-import { productionAPIService } from "@/app/services/API"
+import apiFunction from "@/app/services/API"
 
 interface TodoListsParams {
   list?: string
@@ -13,7 +13,7 @@ interface TodoListsParams {
 export default function TodoLists({ list = "all" }: TodoListsParams) {
   const { isLoading, isError, data, error } = useQuery<Todo[]>({
     queryKey: ["todos", list],
-    queryFn: productionAPIService.getTodos,
+    queryFn: apiFunction.getTodos,
   })
 
   return list === "all" ? (

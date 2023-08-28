@@ -4,7 +4,8 @@ import TodoItem from "../TodoItem"
 import { Flex, Heading, Input, VStack } from "@chakra-ui/react"
 import { FormEvent, useCallback, useMemo, useRef, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { productionAPIService } from "@/app/services/API"
+import apiFunction from "@/app/services/API"
+import getCurrentDate from "@/app/utils/getCurrentDate"
 
 interface TodoListParams {
   list?: string
@@ -15,13 +16,13 @@ export default function TodoList({ list, todos }: TodoListParams) {
   const textRef = useRef<HTMLInputElement | null>(null)
   const queryClient = useQueryClient()
   const createTodoMutation = useMutation({
-    mutationFn: productionAPIService.createTodo,
+    mutationFn: apiFunction.createTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] })
     },
   })
   const updateTodoMutation = useMutation({
-    mutationFn: productionAPIService.updateTodo,
+    mutationFn: apiFunction.updateTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] })
     },
@@ -36,7 +37,7 @@ export default function TodoList({ list, todos }: TodoListParams) {
       const newTodo: Partial<Todo> = {
         isComplete: false,
         text: (data.get("text") as string) ?? "",
-        createdAt: new Date().toString(),
+        createdAt: getCurrentDate().toString(),
       }
 
       createTodoMutation.mutateAsync({ list, body: newTodo }).then(() => {
