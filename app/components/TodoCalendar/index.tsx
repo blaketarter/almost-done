@@ -13,7 +13,7 @@ interface TodoCalendarProps {
 }
 
 export default function TodoCalendar({ list = "all" }: TodoCalendarProps) {
-  const { isLoading, isError, data, error } = useQuery<Todo[]>({
+  const { data } = useQuery<Todo[]>({
     queryKey: ["todos", list],
     queryFn: apiFunction.getTodos,
   })

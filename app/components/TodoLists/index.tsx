@@ -11,7 +11,7 @@ interface TodoListsParams {
 }
 
 export default function TodoLists({ list = "all" }: TodoListsParams) {
-  const { isLoading, isError, data, error } = useQuery<Todo[]>({
+  const { data } = useQuery<Todo[]>({
     queryKey: ["todos", list],
     queryFn: apiFunction.getTodos,
   })

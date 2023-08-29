@@ -6,12 +6,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 export default function Nav() {
   const searchParams = useSearchParams()
-  const list = searchParams.get("list") ?? "all"
+  const list = searchParams?.get("list") ?? "all"
 
   const router = useRouter()
   const pathname = usePathname()
 
-  const { isLoading, isError, data, error } = useQuery<string[]>({
+  const { data } = useQuery<string[]>({
     queryKey: ["lists", "all"],
     queryFn: apiService.getLists,
   })
@@ -19,12 +19,15 @@ export default function Nav() {
   return (
     <nav>
       <HStack>
-        <Heading as="h1">Todos Calendar App</Heading>
+        <Heading as="h1">Almost Done</Heading>
         <Box w="200px">
           <Select
+            aria-label="List"
             defaultValue={list}
             onChange={(e) => {
-              router.replace(`${pathname.split("?")[0]}?list=${e.target.value}`)
+              router.replace(
+                `${pathname?.split("?")?.[0] ?? ""}?list=${e.target.value}`,
+              )
             }}
           >
             {data?.length ? (

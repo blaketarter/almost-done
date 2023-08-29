@@ -13,6 +13,7 @@ export default function TodoItem({ todo, onChange }: TodoProps) {
     <HStack w="100%">
       <Box>
         <Checkbox
+          aria-label="Complete"
           defaultChecked={todo.isComplete}
           type="checkbox"
           onChange={() => {

@@ -11,10 +11,7 @@ export default async function HydratedTodos({
   list?: string
 }) {
   const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(
-    ["todos", list],
-    apiService.getTodos,
-  )
+  await queryClient.prefetchQuery(["todos", list], apiService.getTodos)
   const dehydratedState = dehydrate(queryClient)
 
   return <Hydrate state={dehydratedState}>{children}</Hydrate>

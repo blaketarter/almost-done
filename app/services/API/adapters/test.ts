@@ -3,24 +3,37 @@ import { APIServiceAdapter } from ".."
 
 export const TestAPIServiceAdapter: APIServiceAdapter = {
   getTodos: function (list: string): Promise<Todo[]> {
-    return Promise.resolve([
+    const foos = [
       {
         id: "1",
         isComplete: false,
         text: "Foo 1",
-        createdAt: "2023-08-24",
-        dueAt: "2023-08-24",
+        createdAt: "2023-01-01",
+        dueAt: "2023-01-01",
         list: "foo",
       },
       {
         id: "2",
         isComplete: false,
         text: "Foo 2",
-        createdAt: "2023-08-24",
-        dueAt: "2023-08-24",
+        createdAt: "2023-01-01",
+        dueAt: "2023-01-01",
         list: "foo",
       },
-    ])
+    ]
+    const bars = [
+      {
+        id: "3",
+        isComplete: false,
+        text: "Bar 1",
+        createdAt: "2023-01-01",
+        dueAt: "2023-01-01",
+        list: "bar",
+      },
+    ]
+    return Promise.resolve(
+      list === "all" ? [...foos, ...bars] : list === "foo" ? foos : bars,
+    )
   },
 
   createTodo: function ({
@@ -34,8 +47,8 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
       id: "2",
       isComplete: false,
       text: "Foo 2",
-      createdAt: "2023-08-24",
-      dueAt: "2023-08-24",
+      createdAt: "2023-01-01",
+      dueAt: "2023-01-01",
       list: "foo",
     })
   },
@@ -51,13 +64,13 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
       id: "2",
       isComplete: false,
       text: "Foo 2",
-      createdAt: "2023-08-24",
-      dueAt: "2023-08-24",
+      createdAt: "2023-01-01",
+      dueAt: "2023-01-01",
       list: "foo",
     })
   },
 
   getLists: function (list: string): Promise<string[]> {
-    return Promise.resolve(["foo"])
+    return Promise.resolve(["all", "foo", "bar"])
   },
 }

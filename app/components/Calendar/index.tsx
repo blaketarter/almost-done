@@ -34,10 +34,12 @@ const getHeader = (
       </div>
       <ChevronLeftIcon
         className="navIcon"
+        aria-label="Previous Month"
         onClick={() => setActiveDate(addMonths(activeDate, -1))}
       />
       <ChevronRightIcon
         className="navIcon"
+        aria-label="Next Month"
         onClick={() => setActiveDate(addMonths(activeDate, 1))}
       />
       <h2 className="currentMonth">{format(activeDate, "MMMM yyyy")}</h2>
@@ -119,6 +121,7 @@ const generateDatesForCurrentWeek = (
                 alignItems="center"
                 justifyContent="center"
                 fontSize="8px"
+                data-testid="events"
               >
                 {currentDateEvents.length}
               </Box>
