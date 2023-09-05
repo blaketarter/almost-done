@@ -133,7 +133,7 @@ export async function PATCH(
 
     if (todo) {
       Object.entries(body).forEach(([key, value]) => {
-        todo[key] = value
+        ;(todo as any)[key] = value
       })
     }
 

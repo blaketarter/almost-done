@@ -48,7 +48,7 @@ export class APIService {
 export const productionAPIService = new APIService(ProductionAPIServiceAdapter)
 export const testAPIService = new APIService(TestAPIServiceAdapter)
 
-export function getAPIService(env: process.env.NEXT_PUBLIC_ENV) {
+export function getAPIService(env = process.env.NEXT_PUBLIC_ENV) {
   switch (env) {
     case "production":
       return productionAPIService

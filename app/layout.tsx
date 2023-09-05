@@ -1,9 +1,7 @@
 import "./globals.css"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
 import Providers from "./components/Providers"
-
-const inter = Inter({ subsets: ["latin"] })
+import font from "@/app/utils/font"
 
 export const metadata: Metadata = {
   title: "Todo Calendar App",
@@ -17,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={font.className}>
         <Providers>{children}</Providers>
       </body>
     </html>

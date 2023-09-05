@@ -5,6 +5,9 @@ import {
   AppRouterContext,
   AppRouterInstance,
 } from "next/dist/shared/lib/app-router-context"
+import { ChakraProvider } from "@chakra-ui/react"
+import font from "@/app/utils/font"
+import theme from "@/app/utils/theme"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,7 +45,13 @@ export const AppRouterContextProviderMock = ({
 
 const Providers = ({ children }: { children?: ReactNode }) => {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <div className={font.className}>
+      <ChakraProvider theme={theme}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      </ChakraProvider>
+    </div>
   )
 }
 
