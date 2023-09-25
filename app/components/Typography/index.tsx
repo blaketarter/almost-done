@@ -5,7 +5,6 @@ interface TypographyTextProps extends TextProps {
 }
 
 export function TypographyText(props: TypographyTextProps) {
-  console.log({ props })
   return <Text {...props} />
 }
 

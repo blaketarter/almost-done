@@ -14,7 +14,7 @@ describe("Dashboard", () => {
     // Assert
     expect(screen.getByText("foo")).toBeInTheDocument()
     expect(screen.getByText("Foo 1")).toBeInTheDocument()
-    expect(screen.getByText("January 2023")).toBeInTheDocument()
+    expect(screen.getByText("January 01, 2023")).toBeInTheDocument()
     expect(screen.getByTestId("events")).toHaveTextContent("3")
   })
 })

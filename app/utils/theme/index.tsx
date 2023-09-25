@@ -4,6 +4,8 @@ import buttonTheme from "./buttons"
 import { headingTheme, textTheme } from "./typography"
 
 export const colors = {
+  trueWhite: "#ffffff",
+  offWhite: "#F8F8F8",
   white: "#F8F8F8",
   darkWhite: "#EDEDED",
   black: "#3B3640",
@@ -18,6 +20,8 @@ const theme = extendTheme({
     body: font.style.fontFamily,
   },
   colors: {
+    trueWhite: colors.trueWhite,
+    offWhite: colors.offWhite,
     white: {
       100: colors.white,
       200: colors.white,

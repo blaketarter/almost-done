@@ -12,7 +12,7 @@ describe("Calendar", () => {
 
     // Assert
     expect(screen.getByText("Today")).toBeInTheDocument()
-    expect(screen.getByText("January 2023")).toBeInTheDocument()
+    expect(screen.getByText("January 01, 2023")).toBeInTheDocument()
     expect(screen.getByText("Sun")).toBeInTheDocument()
     expect(screen.getByText("Mon")).toBeInTheDocument()
     expect(screen.getByText("Tue")).toBeInTheDocument()
@@ -51,7 +51,7 @@ describe("Calendar", () => {
     await userEvent.click(previous)
 
     // Assert
-    expect(screen.getByText("December 2022")).toBeInTheDocument()
+    expect(screen.getByText("December")).toBeInTheDocument()
   })
 
   it("next month button works", async () => {
@@ -69,7 +69,7 @@ describe("Calendar", () => {
     await userEvent.click(next)
 
     // Assert
-    expect(screen.getByText("February 2023")).toBeInTheDocument()
+    expect(screen.getByText("February")).toBeInTheDocument()
   })
 
   it("today button works", async () => {
@@ -89,6 +89,6 @@ describe("Calendar", () => {
     await userEvent.click(today)
 
     // Assert
-    expect(screen.getByText("January 2023")).toBeInTheDocument()
+    expect(screen.getByText("January")).toBeInTheDocument()
   })
 })

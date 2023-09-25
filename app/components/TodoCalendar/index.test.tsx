@@ -9,7 +9,7 @@ describe("TodoCalendar", () => {
     render(<TodoCalendar />)
 
     // Assert
-    expect(screen.getByText("January 2023")).toBeInTheDocument()
+    expect(screen.getByText("January 01, 2023")).toBeInTheDocument()
   })
 
   it("renders events", async () => {

@@ -10,10 +10,10 @@ interface DashboardProps {
 export default function Dashboard({ list }: DashboardProps) {
   return (
     <HStack w="100%">
-      <Box as="section" w="40%">
+      <Box as="section" w="calc(100%*1/3)">
         <TodoLists list={list} />
       </Box>
-      <Box as="section" w="60%">
+      <Box as="section" w="calc(100%*2/3)">
         <TodoCalendar list={list} />
       </Box>
     </HStack>

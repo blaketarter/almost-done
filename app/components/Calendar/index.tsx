@@ -13,37 +13,73 @@ import {
   differenceInWeeks,
 } from "date-fns"
 import { Fragment, useState } from "react"
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
+import { TriangleUpIcon } from "@chakra-ui/icons"
 import classNames from "classnames"
-import { Box, Grid, GridItem } from "@chakra-ui/react"
+import { Box, Flex, Grid, GridItem, HStack, VStack } from "@chakra-ui/react"
 import styles from "./index.module.css"
 import { CalendarEvent } from "@/app/types/CalendarEvent"
 import getCurrentDate from "@/app/utils/getCurrentDate"
+import { LightButton } from "../Button"
+import { TypographyHeading, TypographyText } from "../Typography"
+import Card from "../Card"
 
 const getHeader = (
   activeDate: Date,
   setActiveDate: (newActiveDate: Date) => unknown,
 ) => {
   return (
-    <div className="header">
-      <div
-        className="todayButton"
-        onClick={() => setActiveDate(getCurrentDate())}
-      >
-        Today
-      </div>
-      <ChevronLeftIcon
-        className="navIcon"
-        aria-label="Previous Month"
-        onClick={() => setActiveDate(addMonths(activeDate, -1))}
-      />
-      <ChevronRightIcon
-        className="navIcon"
-        aria-label="Next Month"
-        onClick={() => setActiveDate(addMonths(activeDate, 1))}
-      />
-      <h2 className="currentMonth">{format(activeDate, "MMMM yyyy")}</h2>
-    </div>
+    <HStack spacing="14px">
+      <Card h="84px">
+        <VStack spacing="0" alignItems="flex-start" h="100%">
+          <TypographyText variant="bodyLarge" fontWeight="400">
+            Today is <strong>{format(activeDate, "MMMM dd, yyyy")}</strong>
+          </TypographyText>
+          <TypographyText variant="label" fontWeight="400">
+            Almost done with <strong>0</strong> tasks this month!
+          </TypographyText>
+        </VStack>
+      </Card>
+      <Card h="84px">
+        <HStack spacing="46px" h="100%">
+          <LightButton
+            padding="0px 14px"
+            height="28px"
+            margin="0 14px"
+            onClick={() => setActiveDate(getCurrentDate())}
+          >
+            Today
+          </LightButton>
+          <Flex alignItems="center">
+            <TriangleUpIcon
+              className="navIcon"
+              aria-label="Previous Month"
+              transform="rotate(-90deg)"
+              height="18px"
+              width="18px"
+              cursor="pointer"
+              onClick={() => setActiveDate(addMonths(activeDate, -1))}
+            />
+            <TypographyHeading
+              variant="h2"
+              className="currentMonth"
+              display="inline-block"
+              margin="0 14px"
+            >
+              {format(activeDate, "MMMM")}
+            </TypographyHeading>
+            <TriangleUpIcon
+              className="navIcon"
+              aria-label="Next Month"
+              transform="rotate(90deg)"
+              height="18px"
+              width="18px"
+              cursor="pointer"
+              onClick={() => setActiveDate(addMonths(activeDate, 1))}
+            />
+          </Flex>
+        </HStack>
+      </Card>
+    </HStack>
   )
 }
 
@@ -65,7 +101,9 @@ const getWeekDaysNames = (activeDate: Date) => {
             justifyContent="center"
             className="day weekNames"
           >
-            {dayName}
+            <TypographyText variant="label" fontSize="14px" fontWeight="400">
+              {dayName}
+            </TypographyText>
           </GridItem>
         )
       })}
@@ -105,7 +143,11 @@ const generateDatesForCurrentWeek = (
             })}
             onClick={() => setSelectedDate(currentDate)}
           >
-            <Box>{format(currentDate, "d")}</Box>
+            <Box>
+              <TypographyText variant="bodyLarge">
+                {format(currentDate, "d")}
+              </TypographyText>
+            </Box>
             {currentDateEvents.length ? (
               <Box
                 position="absolute"

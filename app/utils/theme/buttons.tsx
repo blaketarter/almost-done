@@ -1,7 +1,7 @@
 import { defineStyle, defineStyleConfig } from "@chakra-ui/react"
 
 const lightPrimary = defineStyle({
-  background: "white.500",
+  background: "trueWhite",
   color: "black.500",
 
   _hover: {
