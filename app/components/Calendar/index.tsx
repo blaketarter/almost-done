@@ -28,8 +28,8 @@ const getHeader = (
   setActiveDate: (newActiveDate: Date) => unknown,
 ) => {
   return (
-    <HStack spacing="14px">
-      <Card h="84px">
+    <Flex gap="14px" dir="row" mb="22px">
+      <Card h="84px" flexShrink="0">
         <VStack spacing="0" alignItems="flex-start" h="100%">
           <TypographyText variant="bodyLarge" fontWeight="400">
             Today is <strong>{format(activeDate, "MMMM dd, yyyy")}</strong>
@@ -39,7 +39,7 @@ const getHeader = (
           </TypographyText>
         </VStack>
       </Card>
-      <Card h="84px">
+      <Card h="84px" flexBasis="100%">
         <HStack spacing="46px" h="100%">
           <LightButton
             padding="0px 14px"
@@ -79,7 +79,7 @@ const getHeader = (
           </Flex>
         </HStack>
       </Card>
-    </HStack>
+    </Flex>
   )
 }
 

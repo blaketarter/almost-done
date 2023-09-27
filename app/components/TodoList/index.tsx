@@ -6,6 +6,7 @@ import { FormEvent, useCallback, useMemo, useRef, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import apiFunction from "@/app/services/API"
 import getCurrentDate from "@/app/utils/getCurrentDate"
+import Card from "../Card"
 
 interface TodoListParams {
   list?: string
@@ -58,9 +59,11 @@ export default function TodoList({ list, todos }: TodoListParams) {
 
   return (
     <VStack w="100%">
-      <Heading w="100%" as="h3" size="lg">
-        {list}
-      </Heading>
+      <Card background="white" w="100%" p="12px">
+        <Heading w="100%" as="h3" size="lg" data-testid={"heading-" + list}>
+          {list}
+        </Heading>
+      </Card>
       {todos.map((todo) => (
         <TodoItem key={todo.id} todo={todo} onChange={onChange} />
       ))}

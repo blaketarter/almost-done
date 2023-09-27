@@ -5,6 +5,7 @@ import groupBy from "lodash/groupBy"
 import TodoList from "../TodoList"
 import { useQuery } from "@tanstack/react-query"
 import apiFunction from "@/app/services/API"
+import Card from "../Card"
 
 interface TodoListsParams {
   list?: string
@@ -16,13 +17,17 @@ export default function TodoLists({ list = "all" }: TodoListsParams) {
     queryFn: apiFunction.getTodos,
   })
 
-  return list === "all" ? (
-    <VStack w="100%">
-      {Object.entries(groupBy(data ?? [], "list")).map(([list, todos]) => (
-        <TodoList key={list} list={list} todos={todos} />
-      ))}
-    </VStack>
-  ) : (
-    <TodoList list={list} todos={data ?? []} />
+  return (
+    <Card>
+      {list === "all" ? (
+        <VStack w="100%">
+          {Object.entries(groupBy(data ?? [], "list")).map(([list, todos]) => (
+            <TodoList key={list} list={list} todos={todos} />
+          ))}
+        </VStack>
+      ) : (
+        <TodoList list={list} todos={data ?? []} />
+      )}
+    </Card>
   )
 }
