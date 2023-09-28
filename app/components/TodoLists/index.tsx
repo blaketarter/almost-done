@@ -18,7 +18,7 @@ export default function TodoLists({ list = "all" }: TodoListsParams) {
   })
 
   return (
-    <Card>
+    <Card flexBasis="100%">
       {list === "all" ? (
         <VStack w="100%">
           {Object.entries(groupBy(data ?? [], "list")).map(([list, todos]) => (

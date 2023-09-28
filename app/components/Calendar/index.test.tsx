@@ -13,13 +13,13 @@ describe("Calendar", () => {
     // Assert
     expect(screen.getByText("Today")).toBeInTheDocument()
     expect(screen.getByText("January 01, 2023")).toBeInTheDocument()
-    expect(screen.getByText("Sun")).toBeInTheDocument()
-    expect(screen.getByText("Mon")).toBeInTheDocument()
-    expect(screen.getByText("Tue")).toBeInTheDocument()
-    expect(screen.getByText("Wed")).toBeInTheDocument()
-    expect(screen.getByText("Thu")).toBeInTheDocument()
-    expect(screen.getByText("Fri")).toBeInTheDocument()
-    expect(screen.getByText("Sat")).toBeInTheDocument()
+    expect(screen.getByText("Sunday")).toBeInTheDocument()
+    expect(screen.getByText("Monday")).toBeInTheDocument()
+    expect(screen.getByText("Tuesday")).toBeInTheDocument()
+    expect(screen.getByText("Wednesday")).toBeInTheDocument()
+    expect(screen.getByText("Thursday")).toBeInTheDocument()
+    expect(screen.getByText("Friday")).toBeInTheDocument()
+    expect(screen.getByText("Saturday")).toBeInTheDocument()
   })
 
   it("renders events", () => {

@@ -6,6 +6,7 @@ import { headingTheme, textTheme } from "./typography"
 export const colors = {
   trueWhite: "#ffffff",
   offWhite: "#F8F8F8",
+  lightGrey: "E6E5E8",
   white: "#F8F8F8",
   darkWhite: "#EDEDED",
   black: "#3B3640",
@@ -22,6 +23,7 @@ const theme = extendTheme({
   colors: {
     trueWhite: colors.trueWhite,
     offWhite: colors.offWhite,
+    grey: colors.lightGrey,
     white: {
       100: colors.white,
       200: colors.white,

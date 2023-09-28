@@ -25,17 +25,23 @@ import Card from "../Card"
 
 const getHeader = (
   activeDate: Date,
+  events: CalendarEvent[],
   setActiveDate: (newActiveDate: Date) => unknown,
 ) => {
+  const currentDate = getCurrentDate()
+  const currentDateEvents = events.filter((event) =>
+    isSameMonth(event.date, currentDate),
+  )
   return (
     <Flex gap="14px" dir="row" mb="22px">
-      <Card h="84px" flexShrink="0">
+      <Card h="84px" flexShrink="0" flexBasis="350px">
         <VStack spacing="0" alignItems="flex-start" h="100%">
           <TypographyText variant="bodyLarge" fontWeight="400">
-            Today is <strong>{format(activeDate, "MMMM dd, yyyy")}</strong>
+            Today is <strong>{format(currentDate, "MMMM dd, yyyy")}</strong>
           </TypographyText>
           <TypographyText variant="label" fontWeight="400">
-            Almost done with <strong>0</strong> tasks this month!
+            Almost done with <strong>{currentDateEvents.length}</strong> tasks
+            this month
           </TypographyText>
         </VStack>
       </Card>
@@ -64,6 +70,8 @@ const getHeader = (
               className="currentMonth"
               display="inline-block"
               margin="0 14px"
+              w="160px"
+              textAlign="center"
             >
               {format(activeDate, "MMMM")}
             </TypographyHeading>
@@ -87,19 +95,26 @@ const getWeekDaysNames = (activeDate: Date) => {
   const weekStartDate = startOfWeek(activeDate)
 
   return (
-    <Grid templateColumns="repeat(7, 1fr)" className="weekContainer">
+    <Grid
+      templateColumns="repeat(7, 1fr)"
+      className="weekContainer"
+      h="22px"
+      borderBottomWidth="1px"
+      borderBottomColor="lightGrey"
+      background="lightGrey"
+      gridGap="1px"
+    >
       {Array.from({ length: 7 }).map((_, day) => {
-        const dayName = format(addDays(weekStartDate, day), "E")
+        const dayName = format(addDays(weekStartDate, day), "eeee")
 
         return (
           <GridItem
             key={dayName}
-            h="50px"
-            w="50px"
             display="flex"
             alignItems="center"
             justifyContent="center"
             className="day weekNames"
+            background="offWhite"
           >
             <TypographyText variant="label" fontSize="14px" fontWeight="400">
               {dayName}
@@ -126,11 +141,11 @@ const generateDatesForCurrentWeek = (
         const currentDateEvents = events.filter((event) =>
           isSameDay(event.date, currentDate),
         )
+        const isToday = isSameDay(currentDate, today)
 
         return (
           <GridItem
-            h="50px"
-            w="50px"
+            background={isToday ? "offWhite" : "white"}
             position="relative"
             key={day}
             display="flex"
@@ -139,24 +154,26 @@ const generateDatesForCurrentWeek = (
             className={classNames("day", {
               [styles.inactiveDay]: !isSameMonth(currentDate, activeDate),
               [styles.selectedDay]: isSameDay(currentDate, selectedDate),
-              [styles.today]: isSameDay(currentDate, today),
             })}
             onClick={() => setSelectedDate(currentDate)}
           >
-            <Box>
-              <TypographyText variant="bodyLarge">
+            <Box position="absolute" top="8px" left="8px">
+              <TypographyText
+                variant="bodyLarge"
+                fontWeight={isToday ? 600 : 400}
+                fontSize="32px"
+              >
                 {format(currentDate, "d")}
               </TypographyText>
             </Box>
             {currentDateEvents.length ? (
               <Box
                 position="absolute"
-                top="50%"
-                left="50%"
-                transform="translate(-50%, 100%)"
-                background="cornflowerblue"
-                h="10px"
-                w="10px"
+                bottom="8px"
+                right="8px"
+                background="brand.500"
+                h="18px"
+                w="18px"
                 color="white"
                 borderRadius="50%"
                 display="flex"
@@ -185,13 +202,21 @@ const getDates = (
   const endOfTheSelectedMonth = endOfMonth(activeDate)
   const startDate = startOfWeek(startOfTheSelectedMonth)
   const endDate = endOfWeek(endOfTheSelectedMonth)
+  const numberOfWeeks = differenceInWeeks(endDate, startDate, {
+    roundingMethod: "ceil",
+  })
 
   return (
-    <Grid templateColumns="repeat(7, 1fr)" className="weekContainer">
+    <Grid
+      templateColumns="repeat(7, 1fr)"
+      templateRows={`repeat(${numberOfWeeks}, 1fr)`}
+      className="weekContainer"
+      h="100%"
+      background="lightGrey"
+      gridGap="1px"
+    >
       {Array.from({
-        length: differenceInWeeks(endDate, startDate, {
-          roundingMethod: "ceil",
-        }),
+        length: numberOfWeeks,
       }).map((_, week) => {
         const currentDate = addDays(startDate, 7 * week)
         return (
@@ -219,10 +244,19 @@ export default function Calendar({ events = [] }: CalendarProps) {
   const [activeDate, setActiveDate] = useState(getCurrentDate())
 
   return (
-    <section>
-      {getHeader(activeDate, setActiveDate)}
-      {getWeekDaysNames(activeDate)}
-      {getDates(selectedDate, activeDate, events, setSelectedDate)}
-    </section>
+    <VStack h="100%" alignItems="stretch">
+      {getHeader(activeDate, events, setActiveDate)}
+      <VStack
+        borderWidth="2px"
+        borderColor="lightGrey"
+        borderRadius="6px"
+        flexBasis="100%"
+        alignItems="stretch"
+        gap="0"
+      >
+        {getWeekDaysNames(activeDate)}
+        {getDates(selectedDate, activeDate, events, setSelectedDate)}
+      </VStack>
+    </VStack>
   )
 }

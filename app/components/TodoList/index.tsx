@@ -58,7 +58,7 @@ export default function TodoList({ list, todos }: TodoListParams) {
   )
 
   return (
-    <VStack w="100%">
+    <VStack w="100%" mb="34px">
       <Card background="white" w="100%" p="12px">
         <Heading w="100%" as="h3" size="lg" data-testid={"heading-" + list}>
           {list}
@@ -67,17 +67,6 @@ export default function TodoList({ list, todos }: TodoListParams) {
       {todos.map((todo) => (
         <TodoItem key={todo.id} todo={todo} onChange={onChange} />
       ))}
-      <Flex w="100%" align="start">
-        <form onSubmit={onSubmit}>
-          <Input
-            type="text"
-            variant="flushed"
-            placeholder="Add new item"
-            name="text"
-            ref={textRef}
-          />
-        </form>
-      </Flex>
     </VStack>
   )
 }

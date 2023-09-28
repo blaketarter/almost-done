@@ -10,17 +10,15 @@ interface TodoProps {
 export default function TodoItem({ todo, onChange }: TodoProps) {
   const [isEditing, setIsEditing] = useState(false)
   return (
-    <HStack w="100%">
-      <Box>
-        <Checkbox
-          aria-label="Complete"
-          defaultChecked={todo.isComplete}
-          type="checkbox"
-          onChange={() => {
-            onChange?.({ ...todo, isComplete: !todo.isComplete })
-          }}
-        />
-      </Box>
+    <HStack w="100%" gap="16px" alignItems="center" mt="16px">
+      <Checkbox
+        aria-label="Complete"
+        defaultChecked={todo.isComplete}
+        type="checkbox"
+        onChange={() => {
+          onChange?.({ ...todo, isComplete: !todo.isComplete })
+        }}
+      />
       <Box>
         {isEditing ? (
           <form
@@ -58,15 +56,6 @@ export default function TodoItem({ todo, onChange }: TodoProps) {
             {todo.text}
           </Text>
         )}
-        <Input
-          disabled={todo.isComplete}
-          type="date"
-          size="xs"
-          defaultValue={todo.dueAt}
-          onChange={(e) => {
-            onChange?.({ ...todo, dueAt: e.target.value })
-          }}
-        />
       </Box>
     </HStack>
   )
