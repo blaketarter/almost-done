@@ -1,4 +1,5 @@
 import apiService from "@/app/services/API"
+import { List } from "@/app/types/List"
 import { Box, Select } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -10,14 +11,15 @@ export default function ListSelect() {
   const router = useRouter()
   const pathname = usePathname()
 
-  const { data } = useQuery<string[]>({
-    queryKey: ["lists", "all"],
+  const { data } = useQuery<List[]>({
+    queryKey: ["lists"],
     queryFn: apiService.getLists,
   })
 
   return (
     <Box w="200px">
       <Select
+        variant="darkPrimary"
         aria-label="List"
         defaultValue={list}
         onChange={(e) => {
@@ -26,10 +28,17 @@ export default function ListSelect() {
           )
         }}
       >
+        <option key="option-all" value="all" data-testid="option-all">
+          all
+        </option>
         {data?.length ? (
           data.map((list) => (
-            <option key={list} value={list} data-testid={"option-" + list}>
-              {list}
+            <option
+              key={list.name}
+              value={list.name}
+              data-testid={"option-" + list.name}
+            >
+              {list.name}
             </option>
           ))
         ) : (

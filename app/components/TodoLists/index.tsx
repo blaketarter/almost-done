@@ -4,8 +4,10 @@ import { VStack } from "@chakra-ui/react"
 import groupBy from "lodash/groupBy"
 import TodoList from "../TodoList"
 import { useQuery } from "@tanstack/react-query"
-import apiFunction from "@/app/services/API"
+import apiService from "@/app/services/API"
 import Card from "../Card"
+import { List } from "@/app/types/List"
+import { useMemo } from "react"
 
 interface TodoListsParams {
   list?: string
@@ -14,19 +16,35 @@ interface TodoListsParams {
 export default function TodoLists({ list = "all" }: TodoListsParams) {
   const { data } = useQuery<Todo[]>({
     queryKey: ["todos", list],
-    queryFn: apiFunction.getTodos,
+    queryFn: apiService.getTodos,
   })
+
+  const { data: lists } = useQuery<List[]>({
+    queryKey: ["lists"],
+    queryFn: apiService.getLists,
+  })
+
+  const todos = groupBy(data ?? [], "list")
+  const listColor = useMemo(
+    () => (lists ?? []).find((maybeList) => maybeList.name === list)?.color,
+    [lists, list],
+  )
 
   return (
     <Card flexBasis="100%">
       {list === "all" ? (
         <VStack w="100%">
-          {Object.entries(groupBy(data ?? [], "list")).map(([list, todos]) => (
-            <TodoList key={list} list={list} todos={todos} />
+          {(lists ?? []).map((list) => (
+            <TodoList
+              key={list.name}
+              list={list.name}
+              color={list.color}
+              todos={todos[list.name] ?? []}
+            />
           ))}
         </VStack>
       ) : (
-        <TodoList list={list} todos={data ?? []} />
+        <TodoList list={list} color={listColor} todos={data ?? []} />
       )}
     </Card>
   )

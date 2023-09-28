@@ -1,13 +1,14 @@
 import { Todo } from "@/app/types/Todo"
 import { QueryFunctionContext } from "@tanstack/react-query"
-import { ProductionAPIServiceAdapter } from "./adapters/production"
+// import { ProductionAPIServiceAdapter } from "./adapters/production"
 import { TestAPIServiceAdapter } from "./adapters/test"
+import { List } from "@/app/types/List"
 
 export interface APIServiceAdapter {
   getTodos(list: string): Promise<Todo[]>
   createTodo(variables: { list?: string; body: Partial<Todo> }): Promise<Todo>
   updateTodo(variables: { list?: string; body: Partial<Todo> }): Promise<Todo>
-  getLists(list: string): Promise<string[]>
+  getLists(list: string): Promise<List[]>
 }
 
 export class APIService {
@@ -45,15 +46,15 @@ export class APIService {
   }
 }
 
-export const productionAPIService = new APIService(ProductionAPIServiceAdapter)
+// export const productionAPIService = new APIService(ProductionAPIServiceAdapter)
 export const testAPIService = new APIService(TestAPIServiceAdapter)
 
 export function getAPIService(env = process.env.NEXT_PUBLIC_ENV) {
   switch (env) {
     case "production":
-      return productionAPIService
+      return testAPIService
     case "development":
-      return productionAPIService
+      return testAPIService
     case "test":
       return testAPIService
     default:

@@ -1,5 +1,6 @@
 import { Todo } from "@/app/types/Todo"
 import { APIServiceAdapter } from ".."
+import { List } from "@/app/types/List"
 
 export const TestAPIServiceAdapter: APIServiceAdapter = {
   getTodos: function (list: string): Promise<Todo[]> {
@@ -70,7 +71,10 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
     })
   },
 
-  getLists: function (list: string): Promise<string[]> {
-    return Promise.resolve(["all", "foo", "bar"])
+  getLists: function (): Promise<List[]> {
+    return Promise.resolve([
+      { id: "1", name: "foo", createdAt: "2023-01-01", color: "#FDB62B" },
+      { id: "2", name: "bar", createdAt: "2023-01-01", color: "#107DFD" },
+    ])
   },
 }

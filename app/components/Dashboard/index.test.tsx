@@ -18,7 +18,9 @@ describe("Dashboard", () => {
       </AppRouterContextProviderMock>,
     )
 
-    await waitFor(() => expect(screen.getByText("foo")).toBeInTheDocument())
+    await waitFor(() =>
+      expect(screen.getByTestId("heading-foo")).toBeInTheDocument(),
+    )
 
     // Assert
     expect(screen.getByTestId("heading-foo")).toHaveTextContent("foo")

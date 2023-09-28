@@ -1,7 +1,7 @@
 "use client"
 import { Todo } from "@/app/types/Todo"
 import TodoItem from "../TodoItem"
-import { Flex, Heading, Input, VStack } from "@chakra-ui/react"
+import { Box, Flex, Heading, Input, VStack } from "@chakra-ui/react"
 import { FormEvent, useCallback, useMemo, useRef, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import apiFunction from "@/app/services/API"
@@ -11,9 +11,10 @@ import Card from "../Card"
 interface TodoListParams {
   list?: string
   todos: Todo[]
+  color?: string
 }
 
-export default function TodoList({ list, todos }: TodoListParams) {
+export default function TodoList({ list, todos, color }: TodoListParams) {
   const textRef = useRef<HTMLInputElement | null>(null)
   const queryClient = useQueryClient()
   const createTodoMutation = useMutation({
@@ -50,6 +51,11 @@ export default function TodoList({ list, todos }: TodoListParams) {
     [createTodoMutation, list],
   )
 
+  const incompleteTodos = useMemo(
+    () => todos.filter((todo) => !todo.isComplete).length,
+    [todos],
+  )
+
   const onChange = useCallback(
     (updatedTodo: Todo) => {
       updateTodoMutation.mutate({ list, body: updatedTodo })
@@ -61,6 +67,23 @@ export default function TodoList({ list, todos }: TodoListParams) {
     <VStack w="100%" mb="34px">
       <Card background="white" w="100%" p="12px">
         <Heading w="100%" as="h3" size="lg" data-testid={"heading-" + list}>
+          <Box
+            as="span"
+            mr="16px"
+            h="28px"
+            w="28px"
+            borderRadius="6px"
+            fontSize="18px"
+            fontWeight="600"
+            display="inline-flex"
+            color="white.500"
+            background={color ? color : "brand.500"}
+            alignItems="center"
+            justifyContent="center"
+            transform="translateY(-4px)"
+          >
+            {incompleteTodos}
+          </Box>
           {list}
         </Heading>
       </Card>

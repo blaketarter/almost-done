@@ -1,6 +1,7 @@
 import { extendTheme } from "@chakra-ui/react"
 import font from "../font"
 import buttonTheme from "./buttons"
+import selectTheme from "./select"
 import { headingTheme, textTheme } from "./typography"
 
 export const colors = {
@@ -59,6 +60,7 @@ const theme = extendTheme({
     Button: buttonTheme,
     Heading: headingTheme,
     Text: textTheme,
+    Select: selectTheme,
   },
 })
 

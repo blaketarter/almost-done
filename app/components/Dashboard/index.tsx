@@ -5,6 +5,8 @@ import TodoCalendar from "../TodoCalendar"
 import { TypographyHeading } from "../Typography"
 import ListSelect from "../ListSelect"
 import Card from "../Card"
+import { FobButton } from "../Button"
+import { AddIcon } from "@chakra-ui/icons"
 
 interface DashboardProps {
   list: string
@@ -33,7 +35,12 @@ export default function Dashboard({ list }: DashboardProps) {
             </TypographyHeading>
           </Box>
           <Card mb="14px">
-            <ListSelect />
+            <HStack justifyContent="space-between">
+              <ListSelect />
+              <FobButton>
+                <AddIcon />
+              </FobButton>
+            </HStack>
           </Card>
           <TodoLists list={list} />
         </VStack>
