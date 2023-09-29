@@ -5,8 +5,8 @@ import { Box, Flex, Heading, Input, VStack } from "@chakra-ui/react"
 import { FormEvent, useCallback, useMemo, useRef, useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import apiFunction from "@/app/services/API"
-import getCurrentDate from "@/app/utils/getCurrentDate"
 import Card from "../Card"
+import { useCurrentDate } from "@/app/utils/useCalendarDates"
 
 interface TodoListParams {
   list?: string
@@ -15,6 +15,7 @@ interface TodoListParams {
 }
 
 export default function TodoList({ list, todos, color }: TodoListParams) {
+  const currentDate = useCurrentDate()
   const textRef = useRef<HTMLInputElement | null>(null)
   const queryClient = useQueryClient()
   const createTodoMutation = useMutation({
@@ -39,7 +40,7 @@ export default function TodoList({ list, todos, color }: TodoListParams) {
       const newTodo: Partial<Todo> = {
         isComplete: false,
         text: (data.get("text") as string) ?? "",
-        createdAt: getCurrentDate().toString(),
+        createdAt: currentDate.toString(),
       }
 
       createTodoMutation.mutateAsync({ list, body: newTodo }).then(() => {
@@ -48,7 +49,7 @@ export default function TodoList({ list, todos, color }: TodoListParams) {
         }
       })
     },
-    [createTodoMutation, list],
+    [createTodoMutation, list, currentDate],
   )
 
   const incompleteTodos = useMemo(

@@ -6,7 +6,7 @@ import { CalendarEvent } from "@/app/types/CalendarEvent"
 import { parse } from "date-fns"
 import { useQuery } from "@tanstack/react-query"
 import apiFunction from "@/app/services/API"
-import getCurrentDate from "@/app/utils/getCurrentDate"
+import { useCurrentDate } from "@/app/utils/useCalendarDates"
 
 interface TodoCalendarProps {
   list?: string
@@ -18,6 +18,8 @@ export default function TodoCalendar({ list = "all" }: TodoCalendarProps) {
     queryFn: apiFunction.getTodos,
   })
 
+  const currentDate = useCurrentDate()
+
   return (
     <Calendar
       events={(data ?? [])
@@ -26,7 +28,7 @@ export default function TodoCalendar({ list = "all" }: TodoCalendarProps) {
           (todo) =>
             ({
               id: todo.id,
-              date: parse(todo.dueAt ?? "", "yyyy-MM-dd", getCurrentDate()),
+              date: parse(todo.dueAt ?? "", "yyyy-MM-dd", currentDate),
             }) as CalendarEvent,
         )}
     />

@@ -8,6 +8,8 @@ import {
 import { ChakraProvider } from "@chakra-ui/react"
 import font from "@/app/utils/font"
 import theme from "@/app/utils/theme"
+import calendarService from "@/app/services/Calendar"
+import getCurrentDate from "../getCurrentDate"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,6 +59,7 @@ const Providers = ({ children }: { children?: ReactNode }) => {
 
 beforeEach(() => {
   queryClient.clear()
+  calendarService.setActiveDate(getCurrentDate())
 })
 
 const customRender = (ui: ReactElement, options: RenderOptions = {}) =>

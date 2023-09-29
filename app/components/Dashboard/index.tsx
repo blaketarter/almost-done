@@ -23,6 +23,7 @@ export default function Dashboard({ list }: DashboardProps) {
             display="flex"
             alignItems="center"
             justifyContent="flex-start"
+            flexShrink="0"
           >
             <TypographyHeading
               variant="h1"

@@ -1,6 +1,6 @@
 import getCurrentDate from "@/app/utils/getCurrentDate"
 import Calendar from "./index"
-import { render, screen } from "@/app/utils/testUtils"
+import { render, screen, waitFor } from "@/app/utils/testUtils"
 import userEvent from "@testing-library/user-event"
 
 describe("Calendar", () => {

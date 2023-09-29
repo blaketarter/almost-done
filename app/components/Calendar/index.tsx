@@ -12,23 +12,30 @@ import {
   isSameDay,
   differenceInWeeks,
 } from "date-fns"
-import { Fragment, useState } from "react"
+import { Fragment } from "react"
 import { TriangleUpIcon } from "@chakra-ui/icons"
 import classNames from "classnames"
 import { Box, Flex, Grid, GridItem, HStack, VStack } from "@chakra-ui/react"
 import styles from "./index.module.css"
 import { CalendarEvent } from "@/app/types/CalendarEvent"
-import getCurrentDate from "@/app/utils/getCurrentDate"
 import { LightButton } from "../Button"
 import { TypographyHeading, TypographyText } from "../Typography"
 import Card from "../Card"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import calendarService from "@/app/services/Calendar"
+import { useActiveDate, useCurrentDate } from "@/app/utils/useCalendarDates"
 
-const getHeader = (
-  activeDate: Date,
-  events: CalendarEvent[],
-  setActiveDate: (newActiveDate: Date) => unknown,
-) => {
-  const currentDate = getCurrentDate()
+const getHeader = ({
+  activeDate,
+  currentDate,
+  events,
+  setActiveDate,
+}: {
+  activeDate: Date | undefined
+  currentDate: Date
+  events: CalendarEvent[]
+  setActiveDate: (newActiveDate: Date) => unknown
+}) => {
   const currentDateEvents = events.filter((event) =>
     isSameMonth(event.date, currentDate),
   )
@@ -51,7 +58,7 @@ const getHeader = (
             padding="0px 14px"
             height="28px"
             margin="0 14px"
-            onClick={() => setActiveDate(getCurrentDate())}
+            onClick={() => setActiveDate(currentDate)}
           >
             Today
           </LightButton>
@@ -63,7 +70,11 @@ const getHeader = (
               height="18px"
               width="18px"
               cursor="pointer"
-              onClick={() => setActiveDate(addMonths(activeDate, -1))}
+              onClick={
+                activeDate
+                  ? () => setActiveDate(addMonths(activeDate, -1))
+                  : undefined
+              }
             />
             <TypographyHeading
               variant="h2"
@@ -73,7 +84,7 @@ const getHeader = (
               w="160px"
               textAlign="center"
             >
-              {format(activeDate, "MMMM")}
+              {activeDate ? format(activeDate, "MMMM") : null}
             </TypographyHeading>
             <TriangleUpIcon
               className="navIcon"
@@ -82,7 +93,11 @@ const getHeader = (
               height="18px"
               width="18px"
               cursor="pointer"
-              onClick={() => setActiveDate(addMonths(activeDate, 1))}
+              onClick={
+                activeDate
+                  ? () => setActiveDate(addMonths(activeDate, 1))
+                  : undefined
+              }
             />
           </Flex>
         </HStack>
@@ -91,8 +106,8 @@ const getHeader = (
   )
 }
 
-const getWeekDaysNames = (activeDate: Date) => {
-  const weekStartDate = startOfWeek(activeDate)
+const getWeekDaysNames = ({ currentDate }: { currentDate: Date }) => {
+  const weekStartDate = startOfWeek(currentDate)
 
   return (
     <Grid
@@ -126,22 +141,25 @@ const getWeekDaysNames = (activeDate: Date) => {
   )
 }
 
-const generateDatesForCurrentWeek = (
-  date: Date,
-  selectedDate: Date,
-  activeDate: Date,
-  events: CalendarEvent[],
-  setSelectedDate: (newSelectedDate: Date) => unknown,
-) => {
-  const today = getCurrentDate()
+const generateDatesForCurrentWeek = ({
+  date,
+  currentDate,
+  activeDate,
+  events,
+}: {
+  date: Date
+  currentDate: Date
+  activeDate: Date
+  events: CalendarEvent[]
+}) => {
   return (
     <>
       {Array.from({ length: 7 }).map((_, day) => {
-        const currentDate = addDays(date, day)
-        const currentDateEvents = events.filter((event) =>
-          isSameDay(event.date, currentDate),
+        const dateToRender = addDays(date, day)
+        const dateToRenderEvents = events.filter((event) =>
+          isSameDay(event.date, dateToRender),
         )
-        const isToday = isSameDay(currentDate, today)
+        const isToday = isSameDay(dateToRender, currentDate)
 
         return (
           <GridItem
@@ -152,10 +170,8 @@ const generateDatesForCurrentWeek = (
             alignItems="center"
             justifyContent="center"
             className={classNames("day", {
-              [styles.inactiveDay]: !isSameMonth(currentDate, activeDate),
-              [styles.selectedDay]: isSameDay(currentDate, selectedDate),
+              [styles.inactiveDay]: !isSameMonth(dateToRender, activeDate),
             })}
-            onClick={() => setSelectedDate(currentDate)}
           >
             <Box position="absolute" top="8px" left="8px">
               <TypographyText
@@ -163,10 +179,10 @@ const generateDatesForCurrentWeek = (
                 fontWeight={isToday ? 600 : 400}
                 fontSize="32px"
               >
-                {format(currentDate, "d")}
+                {format(dateToRender, "d")}
               </TypographyText>
             </Box>
-            {currentDateEvents.length ? (
+            {dateToRenderEvents.length ? (
               <Box
                 position="absolute"
                 bottom="8px"
@@ -182,7 +198,7 @@ const generateDatesForCurrentWeek = (
                 fontSize="8px"
                 data-testid="events"
               >
-                {currentDateEvents.length}
+                {dateToRenderEvents.length}
               </Box>
             ) : null}
           </GridItem>
@@ -192,12 +208,15 @@ const generateDatesForCurrentWeek = (
   )
 }
 
-const getDates = (
-  selectedDate: Date,
-  activeDate: Date,
-  events: CalendarEvent[],
-  setSelectedDate: (newSelectedDate: Date) => unknown,
-) => {
+const getDates = ({
+  currentDate,
+  activeDate,
+  events,
+}: {
+  currentDate: Date
+  activeDate: Date
+  events: CalendarEvent[]
+}) => {
   const startOfTheSelectedMonth = startOfMonth(activeDate)
   const endOfTheSelectedMonth = endOfMonth(activeDate)
   const startDate = startOfWeek(startOfTheSelectedMonth)
@@ -218,16 +237,15 @@ const getDates = (
       {Array.from({
         length: numberOfWeeks,
       }).map((_, week) => {
-        const currentDate = addDays(startDate, 7 * week)
+        const date = addDays(startDate, 7 * week)
         return (
           <Fragment key={week}>
-            {generateDatesForCurrentWeek(
+            {generateDatesForCurrentWeek({
+              date,
               currentDate,
-              selectedDate,
               activeDate,
               events,
-              setSelectedDate,
-            )}
+            })}
           </Fragment>
         )
       })}
@@ -240,12 +258,13 @@ interface CalendarProps {
 }
 
 export default function Calendar({ events = [] }: CalendarProps) {
-  const [selectedDate, setSelectedDate] = useState(getCurrentDate())
-  const [activeDate, setActiveDate] = useState(getCurrentDate())
+  const queryClient = useQueryClient()
+  const currentDate = useCurrentDate()
+  const [activeDate, setActiveDate] = useActiveDate()
 
   return (
     <VStack h="100%" alignItems="stretch">
-      {getHeader(activeDate, events, setActiveDate)}
+      {getHeader({ currentDate, activeDate, events, setActiveDate })}
       <VStack
         borderWidth="2px"
         borderColor="lightGrey"
@@ -254,8 +273,8 @@ export default function Calendar({ events = [] }: CalendarProps) {
         alignItems="stretch"
         gap="0"
       >
-        {getWeekDaysNames(activeDate)}
-        {getDates(selectedDate, activeDate, events, setSelectedDate)}
+        {getWeekDaysNames({ currentDate })}
+        {activeDate ? getDates({ currentDate, activeDate, events }) : null}
       </VStack>
     </VStack>
   )

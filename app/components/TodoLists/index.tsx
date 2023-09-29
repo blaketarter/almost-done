@@ -8,12 +8,20 @@ import apiService from "@/app/services/API"
 import Card from "../Card"
 import { List } from "@/app/types/List"
 import { useMemo } from "react"
+import { isSameMonth, parse } from "date-fns"
+import calendarService from "@/app/services/Calendar"
+import { useCurrentDate } from "@/app/utils/useCalendarDates"
 
 interface TodoListsParams {
   list?: string
 }
 
 export default function TodoLists({ list = "all" }: TodoListsParams) {
+  const currentDate = useCurrentDate()
+  const { data: activeDate } = useQuery<Date>({
+    queryKey: ["activeDate"],
+    queryFn: calendarService.getActiveDate,
+  })
   const { data } = useQuery<Todo[]>({
     queryKey: ["todos", list],
     queryFn: apiService.getTodos,
@@ -24,7 +32,21 @@ export default function TodoLists({ list = "all" }: TodoListsParams) {
     queryFn: apiService.getLists,
   })
 
-  const todos = groupBy(data ?? [], "list")
+  const filteredTodos = data?.filter((todo) => {
+    if (todo.dueAt === undefined) {
+      return true
+    }
+
+    const dueAt = parse(todo.dueAt ?? "", "yyyy-MM-dd", currentDate)
+
+    if (activeDate !== undefined && isSameMonth(dueAt, activeDate)) {
+      return true
+    }
+
+    return false
+  })
+
+  const todos = groupBy(filteredTodos ?? [], "list")
   const listColor = useMemo(
     () => (lists ?? []).find((maybeList) => maybeList.name === list)?.color,
     [lists, list],
