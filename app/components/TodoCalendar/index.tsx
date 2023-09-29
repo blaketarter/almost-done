@@ -5,8 +5,9 @@ import Calendar from "../Calendar"
 import { CalendarEvent } from "@/app/types/CalendarEvent"
 import { parse } from "date-fns"
 import { useQuery } from "@tanstack/react-query"
-import apiFunction from "@/app/services/API"
+import apiService from "@/app/services/API"
 import { useCurrentDate } from "@/app/utils/useCalendarDates"
+import { List } from "@/app/types/List"
 
 interface TodoCalendarProps {
   list?: string
@@ -15,7 +16,11 @@ interface TodoCalendarProps {
 export default function TodoCalendar({ list = "all" }: TodoCalendarProps) {
   const { data } = useQuery<Todo[]>({
     queryKey: ["todos", list],
-    queryFn: apiFunction.getTodos,
+    queryFn: apiService.getTodos,
+  })
+  const { data: lists } = useQuery<List[]>({
+    queryKey: ["lists"],
+    queryFn: apiService.getLists,
   })
 
   const currentDate = useCurrentDate()
@@ -24,11 +29,15 @@ export default function TodoCalendar({ list = "all" }: TodoCalendarProps) {
     <Calendar
       events={(data ?? [])
         .filter((todo) => todo.dueAt)
+        .filter((todo) => !todo.isComplete)
         .map(
           (todo) =>
             ({
               id: todo.id,
               date: parse(todo.dueAt ?? "", "yyyy-MM-dd", currentDate),
+              color:
+                lists?.find((list) => list.name === todo.list)?.color ??
+                "brand.500",
             }) as CalendarEvent,
         )}
     />

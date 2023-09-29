@@ -21,9 +21,9 @@ import { CalendarEvent } from "@/app/types/CalendarEvent"
 import { LightButton } from "../Button"
 import { TypographyHeading, TypographyText } from "../Typography"
 import Card from "../Card"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import calendarService from "@/app/services/Calendar"
+import { useQueryClient } from "@tanstack/react-query"
 import { useActiveDate, useCurrentDate } from "@/app/utils/useCalendarDates"
+import groupBy from "lodash/groupBy"
 
 const getHeader = ({
   activeDate,
@@ -182,25 +182,30 @@ const generateDatesForCurrentWeek = ({
                 {format(dateToRender, "d")}
               </TypographyText>
             </Box>
-            {dateToRenderEvents.length ? (
-              <Box
-                position="absolute"
-                bottom="8px"
-                right="8px"
-                background="brand.500"
-                h="18px"
-                w="18px"
-                color="white"
-                borderRadius="50%"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                fontSize="8px"
-                data-testid="events"
-              >
-                {dateToRenderEvents.length}
-              </Box>
-            ) : null}
+            <HStack position="absolute" bottom="8px" right="8px">
+              {dateToRenderEvents.length
+                ? Object.entries(groupBy(dateToRenderEvents, "color")).map(
+                    ([color, eventsToRender]) =>
+                      eventsToRender.length ? (
+                        <Box
+                          key={color}
+                          background={color ?? "brand.500"}
+                          h="18px"
+                          w="18px"
+                          color="white"
+                          borderRadius="50%"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          fontSize="8px"
+                          data-testid="events"
+                        >
+                          {eventsToRender.length}
+                        </Box>
+                      ) : null,
+                  )
+                : null}
+            </HStack>
           </GridItem>
         )
       })}
@@ -258,7 +263,6 @@ interface CalendarProps {
 }
 
 export default function Calendar({ events = [] }: CalendarProps) {
-  const queryClient = useQueryClient()
   const currentDate = useCurrentDate()
   const [activeDate, setActiveDate] = useActiveDate()
 
