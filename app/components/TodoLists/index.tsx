@@ -66,7 +66,7 @@ export default function TodoLists({ list = "all" }: TodoListsParams) {
           ))}
         </VStack>
       ) : (
-        <TodoList list={list} color={listColor} todos={data ?? []} />
+        <TodoList list={list} color={listColor} todos={filteredTodos ?? []} />
       )}
     </Card>
   )

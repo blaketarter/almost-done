@@ -35,6 +35,20 @@ const todos: Record<string, Todo[]> = {
       dueAt: "2023-08-24",
       list: "foo",
     },
+    {
+      id: "6",
+      isComplete: false,
+      text: "Foo 3",
+      createdAt: "2023-08-24",
+      list: "foo",
+    },
+    {
+      id: "7",
+      isComplete: false,
+      text: "Foo 4",
+      createdAt: "2023-08-24",
+      list: "foo",
+    },
   ],
   bar: [
     {
@@ -59,6 +73,13 @@ const todos: Record<string, Todo[]> = {
       text: "Bar 3",
       createdAt: "2023-08-24",
       dueAt: "2023-08-24",
+      list: "bar",
+    },
+    {
+      id: "8",
+      isComplete: false,
+      text: "Bar 4",
+      createdAt: "2023-08-24",
       list: "bar",
     },
   ],
