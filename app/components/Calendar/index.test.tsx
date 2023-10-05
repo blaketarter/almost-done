@@ -11,6 +11,12 @@ describe("Calendar", () => {
     render(<Calendar />)
 
     // Assert
+    expect(
+      screen.getByText(
+        (_, element) =>
+          element?.textContent === "Almost done with 0 tasks this month",
+      ),
+    ).toBeInTheDocument()
     expect(screen.getByText("Today")).toBeInTheDocument()
     expect(screen.getByText("January 01, 2023")).toBeInTheDocument()
     expect(screen.getByText("Sunday")).toBeInTheDocument()

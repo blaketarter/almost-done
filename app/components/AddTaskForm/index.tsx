@@ -30,11 +30,9 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
       e.preventDefault()
 
       const data = new FormData(e.target as HTMLFormElement)
-      const dueAt = parse(
-        (data.get("dueAt") as string) ?? "",
-        "yyyy-MM-dd",
-        currentDate,
-      )
+      const dueAt = data.get("dueAt")
+        ? parse((data.get("dueAt") as string) ?? "", "yyyy-MM-dd", currentDate)
+        : null
 
       const newTodo: Partial<Todo> = {
         isComplete: false,
@@ -57,16 +55,22 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
     <form onSubmit={onSubmit}>
       <VStack alignItems="stretch" gap="24px">
         <HStack w="100%">
-          <Input autoFocus={true} name="text" w="280px" />
+          <Input
+            autoFocus={true}
+            aria-label="Task name"
+            name="text"
+            w="280px"
+          />
           <DarkButton flexGrow="1" type="submit">
             Add
           </DarkButton>
         </HStack>
         <HStack w="100%">
-          <Input type="date" name="dueAt" />
+          <Input type="date" aria-label="Task due date" name="dueAt" />
           <ListSelect
             defaultToAll={false}
             placeholder="Assign list"
+            aria-label="Task list"
             onChange={(e) => setList(e.target.value)}
           />
         </HStack>

@@ -1,4 +1,4 @@
-import Dashboard from "./index"
+import TaskSidebar from "./index"
 import {
   AppRouterContextProviderMock,
   render,
@@ -6,7 +6,7 @@ import {
   waitFor,
 } from "@/app/utils/testUtils"
 
-describe("Dashboard", () => {
+describe("TaskSidebar", () => {
   it("renders", async () => {
     // Arrange
     const list = "all"
@@ -14,7 +14,7 @@ describe("Dashboard", () => {
     // Act
     render(
       <AppRouterContextProviderMock>
-        <Dashboard list="all" />
+        <TaskSidebar list="all" />
       </AppRouterContextProviderMock>,
     )
 
@@ -23,15 +23,8 @@ describe("Dashboard", () => {
     )
 
     // Assert
+    expect(screen.getByText("all")).toBeInTheDocument()
     expect(screen.getByTestId("heading-foo")).toHaveTextContent("foo")
     expect(screen.getByText("Foo 1")).toBeInTheDocument()
-    expect(screen.getByText("January 01, 2023")).toBeInTheDocument()
-    expect(
-      screen.getByText(
-        (_, element) =>
-          element?.textContent === "Almost done with 3 tasks this month",
-      ),
-    ).toBeInTheDocument()
-    expect(screen.getByLabelText("foo events due today")).toHaveTextContent("2")
   })
 })

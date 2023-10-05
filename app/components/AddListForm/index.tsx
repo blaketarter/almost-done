@@ -61,7 +61,13 @@ export default function AddListForm({ onSuccess }: AddListFormProps) {
     <form onSubmit={onSubmit}>
       <VStack alignItems="stretch" gap="24px">
         <HStack w="100%">
-          <Input autoFocus={true} w="280px" name="text" ref={textRef} />
+          <Input
+            aria-label="List name"
+            autoFocus={true}
+            w="280px"
+            name="text"
+            ref={textRef}
+          />
           <DarkButton flexGrow="1" type="submit">
             Create
           </DarkButton>
