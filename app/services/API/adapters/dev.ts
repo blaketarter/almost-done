@@ -2,7 +2,8 @@ import { Todo } from "@/app/types/Todo"
 import { APIServiceAdapter } from ".."
 import { List } from "@/app/types/List"
 import getCurrentDate from "@/app/utils/getCurrentDate"
-import { randomUUID } from "crypto"
+import { v4 } from "uuid"
+import { format } from "date-fns"
 
 export const DevAPIServiceAdapter: APIServiceAdapter = {
   getTodos: function (list: string): Promise<Todo[]> {
@@ -27,14 +28,10 @@ export const DevAPIServiceAdapter: APIServiceAdapter = {
     const now = getCurrentDate()
 
     const todo: Todo = {
-      id: randomUUID(),
+      id: v4(),
       isComplete: false,
       text: body.text ?? "",
-      createdAt: now.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }),
+      createdAt: format(now, "yyyy-MM-dd"),
       dueAt: body.dueAt ?? undefined,
       list: list,
     }
@@ -79,5 +76,22 @@ export const DevAPIServiceAdapter: APIServiceAdapter = {
     const lists: List[] = JSON.parse(localStorage.getItem("lists") ?? "[]")
 
     return Promise.resolve(lists)
+  },
+
+  createList: function ({ body }: { body: Partial<List> }): Promise<List> {
+    const now = getCurrentDate()
+
+    const list: List = {
+      id: v4(),
+      name: body.name ?? "",
+      color: body.color,
+      createdAt: format(now, "yyyy-MM-dd"),
+    }
+
+    const lists: List[] = JSON.parse(localStorage.getItem("lists") ?? "[]")
+
+    localStorage.setItem("lists", JSON.stringify([...lists, list]))
+
+    return Promise.resolve(list)
   },
 }

@@ -1,16 +1,20 @@
 import apiService from "@/app/services/API"
 import { List } from "@/app/types/List"
-import { Box, Select } from "@chakra-ui/react"
+import { Box, SelectProps } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { DarkSelect } from "../Select"
 
-export default function ListSelect() {
-  const searchParams = useSearchParams()
-  const list = searchParams?.get("list") ?? "all"
+interface ListSelectProps extends SelectProps {
+  defaultToAll?: boolean
+  placeholder?: string
+}
 
-  const router = useRouter()
-  const pathname = usePathname()
-
+export default function ListSelect({
+  defaultToAll = true,
+  placeholder,
+  ...props
+}: ListSelectProps) {
   const { data } = useQuery<List[]>({
     queryKey: ["lists"],
     queryFn: apiService.getLists,
@@ -18,19 +22,16 @@ export default function ListSelect() {
 
   return (
     <Box w="200px">
-      <Select
-        variant="darkPrimary"
-        aria-label="List"
-        defaultValue={list}
-        onChange={(e) => {
-          router.replace(
-            `${pathname?.split("?")?.[0] ?? ""}?list=${e.target.value}`,
-          )
-        }}
-      >
-        <option key="option-all" value="all" data-testid="option-all">
-          all
-        </option>
+      <DarkSelect aria-label="List" {...props}>
+        {defaultToAll ? (
+          <option key="option-all" value="all" data-testid="option-all">
+            all
+          </option>
+        ) : (
+          <option value="" disabled selected>
+            {placeholder}
+          </option>
+        )}
         {data?.length ? (
           data.map((list) => (
             <option
@@ -41,12 +42,16 @@ export default function ListSelect() {
               {list.name}
             </option>
           ))
-        ) : (
-          <option key={list} value={list}>
-            {list}
+        ) : props.defaultValue ? (
+          <option key={String(props.defaultValue)} value={props.defaultValue}>
+            {props.defaultValue}
           </option>
-        )}
-      </Select>
+        ) : props.value ? (
+          <option key={String(props.value)} value={props.value}>
+            {props.value}
+          </option>
+        ) : null}
+      </DarkSelect>
     </Box>
   )
 }

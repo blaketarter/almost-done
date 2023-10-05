@@ -53,7 +53,7 @@ export default function TodoLists({ list = "all" }: TodoListsParams) {
   )
 
   return (
-    <Card flexBasis="100%">
+    <Card flexBasis="100%" overflowY="auto">
       {list === "all" ? (
         <VStack w="100%">
           {(lists ?? []).map((list) => (

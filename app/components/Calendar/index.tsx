@@ -21,9 +21,9 @@ import { CalendarEvent } from "@/app/types/CalendarEvent"
 import { LightButton } from "../Button"
 import { TypographyHeading, TypographyText } from "../Typography"
 import Card from "../Card"
-import { useQueryClient } from "@tanstack/react-query"
 import { useActiveDate, useCurrentDate } from "@/app/utils/useCalendarDates"
 import groupBy from "lodash/groupBy"
+import Tooltip from "../Tooltip"
 
 const getHeader = ({
   activeDate,
@@ -187,21 +187,33 @@ const generateDatesForCurrentWeek = ({
                 ? Object.entries(groupBy(dateToRenderEvents, "color")).map(
                     ([color, eventsToRender]) =>
                       eventsToRender.length ? (
-                        <Box
+                        <Tooltip
                           key={color}
-                          background={color ?? "brand.500"}
-                          h="18px"
-                          w="18px"
-                          color="white"
-                          borderRadius="50%"
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="center"
-                          fontSize="8px"
-                          data-testid="events"
+                          text={eventsToRender.reduce(
+                            (text, event) => text + "\n" + event.text,
+                            "",
+                          )}
                         >
-                          {eventsToRender.length}
-                        </Box>
+                          <Box
+                            aria-label={
+                              (eventsToRender[0]?.groupTitle
+                                ? eventsToRender[0]?.groupTitle + " events"
+                                : "Events") + " due today"
+                            }
+                            background={color ?? "brand.500"}
+                            h="18px"
+                            w="18px"
+                            color="white"
+                            borderRadius="50%"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            fontSize="8px"
+                            data-testid="events"
+                          >
+                            {eventsToRender.length}
+                          </Box>
+                        </Tooltip>
                       ) : null,
                   )
                 : null}

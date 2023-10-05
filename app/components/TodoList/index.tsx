@@ -66,7 +66,14 @@ export default function TodoList({ list, todos, color }: TodoListParams) {
 
   return (
     <VStack w="100%" mb="34px">
-      <Card background="white" w="100%" p="12px">
+      <Card
+        background="white"
+        w="100%"
+        p="12px"
+        position="sticky"
+        top="0"
+        zIndex="5"
+      >
         <Heading w="100%" as="h3" size="lg" data-testid={"heading-" + list}>
           <Box
             as="span"

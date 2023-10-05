@@ -77,4 +77,13 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
       { id: "2", name: "bar", createdAt: "2023-01-01", color: "#107DFD" },
     ])
   },
+
+  createList: function (): Promise<List> {
+    return Promise.resolve({
+      id: "3",
+      name: "baz",
+      createdAt: "2023-01-01",
+      color: "#107DFD",
+    })
+  },
 }

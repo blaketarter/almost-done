@@ -11,6 +11,7 @@ export interface APIServiceAdapter {
   createTodo(variables: { list?: string; body: Partial<Todo> }): Promise<Todo>
   updateTodo(variables: { list?: string; body: Partial<Todo> }): Promise<Todo>
   getLists(list: string): Promise<List[]>
+  createList(variables: { body: Partial<List> }): Promise<List>
 }
 
 export class APIService {
@@ -23,6 +24,7 @@ export class APIService {
     this.createTodo = this.createTodo.bind(this)
     this.updateTodo = this.updateTodo.bind(this)
     this.getLists = this.getLists.bind(this)
+    this.createList = this.createList.bind(this)
   }
 
   getTodos(context: QueryFunctionContext) {
@@ -45,6 +47,10 @@ export class APIService {
       (context.queryKey[context.queryKey.length - 1] as string) ?? "all"
 
     return this.adapater.getLists(list)
+  }
+
+  createList(variables: { body: Partial<List> }) {
+    return this.adapater.createList(variables)
   }
 }
 

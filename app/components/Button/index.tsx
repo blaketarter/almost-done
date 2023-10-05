@@ -25,10 +25,6 @@ export function BrandButton(props: ButtonProps) {
   return <ChakraButton variant="brandPrimary" {...props} />
 }
 
-export function FobButton({ children, ...props }: ButtonProps) {
-  return (
-    <ChakraButton variant="fobPrimary" {...props}>
-      <AddIcon />
-    </ChakraButton>
-  )
+export function FobButton(props: ButtonProps) {
+  return <ChakraButton variant="fobPrimary" {...props} />
 }

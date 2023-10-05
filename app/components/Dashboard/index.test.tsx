@@ -26,6 +26,6 @@ describe("Dashboard", () => {
     expect(screen.getByTestId("heading-foo")).toHaveTextContent("foo")
     expect(screen.getByText("Foo 1")).toBeInTheDocument()
     expect(screen.getByText("January 01, 2023")).toBeInTheDocument()
-    expect(screen.getByTestId("events")).toHaveTextContent("3")
+    expect(screen.getByLabelText("foo events due today")).toHaveTextContent("2")
   })
 })

@@ -11,11 +11,12 @@ describe("ListSelect", () => {
   it("changes list on selection", async () => {
     // Arrange
     const replace = jest.fn()
+    const onChange = jest.fn()
 
     // Act
     render(
       <AppRouterContextProviderMock router={{ replace }}>
-        <ListSelect />
+        <ListSelect onChange={onChange} />
       </AppRouterContextProviderMock>,
     )
 
@@ -23,6 +24,10 @@ describe("ListSelect", () => {
     await userEvent.selectOptions(screen.getByLabelText("List"), "foo")
 
     // Assert
-    expect(replace).toHaveBeenCalledWith("?list=foo")
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        target: expect.objectContaining({ value: "foo" }),
+      }),
+    )
   })
 })

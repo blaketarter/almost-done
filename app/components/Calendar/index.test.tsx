@@ -25,22 +25,48 @@ describe("Calendar", () => {
   it("renders events", () => {
     // Arrange
     const events = [
-      { id: "1", date: getCurrentDate() },
-      { id: "2", date: getCurrentDate() },
+      {
+        id: "1",
+        date: getCurrentDate(),
+        color: "#ffffff",
+        text: "foo 1",
+        groupTitle: "Test Data",
+      },
+      {
+        id: "2",
+        date: getCurrentDate(),
+        color: "#ffffff",
+        text: "foo 2",
+        groupTitle: "Test Data",
+      },
     ]
 
     // Act
     render(<Calendar events={events} />)
 
     // Assert
-    expect(screen.getByTestId("events")).toHaveTextContent("2")
+    expect(
+      screen.getByLabelText("Test Data events due today"),
+    ).toHaveTextContent("2")
   })
 
   it("previous month button works", async () => {
     // Arrange
     const events = [
-      { id: "1", date: getCurrentDate() },
-      { id: "2", date: getCurrentDate() },
+      {
+        id: "1",
+        date: getCurrentDate(),
+        color: "#ffffff",
+        text: "foo 1",
+        groupTitle: "Test Data",
+      },
+      {
+        id: "2",
+        date: getCurrentDate(),
+        color: "#ffffff",
+        text: "foo 2",
+        groupTitle: "Test Data",
+      },
     ]
 
     // Act
@@ -57,8 +83,20 @@ describe("Calendar", () => {
   it("next month button works", async () => {
     // Arrange
     const events = [
-      { id: "1", date: getCurrentDate() },
-      { id: "2", date: getCurrentDate() },
+      {
+        id: "1",
+        date: getCurrentDate(),
+        color: "#ffffff",
+        text: "foo 1",
+        groupTitle: "Test Data",
+      },
+      {
+        id: "2",
+        date: getCurrentDate(),
+        color: "#ffffff",
+        text: "foo 2",
+        groupTitle: "Test Data",
+      },
     ]
 
     // Act
@@ -75,8 +113,20 @@ describe("Calendar", () => {
   it("today button works", async () => {
     // Arrange
     const events = [
-      { id: "1", date: getCurrentDate() },
-      { id: "2", date: getCurrentDate() },
+      {
+        id: "1",
+        date: getCurrentDate(),
+        color: "#ffffff",
+        text: "foo 1",
+        groupTitle: "Test Data",
+      },
+      {
+        id: "2",
+        date: getCurrentDate(),
+        color: "#ffffff",
+        text: "foo 2",
+        groupTitle: "Test Data",
+      },
     ]
 
     // Act

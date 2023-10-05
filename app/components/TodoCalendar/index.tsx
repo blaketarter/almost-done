@@ -35,9 +35,11 @@ export default function TodoCalendar({ list = "all" }: TodoCalendarProps) {
             ({
               id: todo.id,
               date: parse(todo.dueAt ?? "", "yyyy-MM-dd", currentDate),
+              text: todo.text,
               color:
                 lists?.find((list) => list.name === todo.list)?.color ??
                 "brand.500",
+              groupTitle: todo.list,
             }) as CalendarEvent,
         )}
     />

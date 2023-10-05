@@ -6,11 +6,13 @@ import getCurrentDate from "@/app/utils/getCurrentDate"
 
 const lists: Record<string, List> = {
   foo: {
+    id: "1",
     name: "Foo",
     color: "#FDB62B",
     createdAt: "2023-08-24",
   },
   bar: {
+    id: "2",
     name: "Bar",
     color: "#107DFD",
     createdAt: "2023-08-24",
