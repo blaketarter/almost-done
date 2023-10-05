@@ -1,15 +1,15 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { RenderOptions, render } from "@testing-library/react"
 import { ReactElement, ReactNode } from "react"
-import {
-  AppRouterContext,
-  AppRouterInstance,
-} from "next/dist/shared/lib/app-router-context"
 import { ChakraProvider } from "@chakra-ui/react"
 import font from "@/app/utils/font"
 import theme from "@/app/utils/theme"
 import calendarService from "@/app/services/Calendar"
 import getCurrentDate from "../getCurrentDate"
+import {
+  AppRouterContext,
+  AppRouterInstance,
+} from "next/dist/shared/lib/app-router-context.shared-runtime"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,7 +19,6 @@ const queryClient = new QueryClient({
     },
   },
 })
-
 export type AppRouterContextProviderMockProps = {
   router?: Partial<AppRouterInstance>
   children: React.ReactNode
