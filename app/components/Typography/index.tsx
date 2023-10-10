@@ -9,7 +9,7 @@ export function TypographyText(props: TypographyTextProps) {
 }
 
 interface TypographyHeadingProps extends HeadingProps {
-  variant: "h1" | "h2"
+  variant: "h1" | "h2" | "h3"
 }
 
 export function TypographyHeading(props: TypographyHeadingProps) {

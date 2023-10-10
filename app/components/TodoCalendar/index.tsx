@@ -30,18 +30,16 @@ export default function TodoCalendar({ list = "all" }: TodoCalendarProps) {
       events={(data ?? [])
         .filter((todo) => todo.dueAt)
         .filter((todo) => !todo.isComplete)
-        .map(
-          (todo) =>
-            ({
-              id: todo.id,
-              date: parse(todo.dueAt ?? "", "yyyy-MM-dd", currentDate),
-              text: todo.text,
-              color:
-                lists?.find((list) => list.name === todo.list)?.color ??
-                "brand.500",
-              groupTitle: todo.list,
-            }) as CalendarEvent,
-        )}
+        .map((todo) => {
+          const list = lists?.find((list) => list.id === todo.listId)
+          return {
+            id: todo.id,
+            date: parse(todo.dueAt ?? "", "yyyy-MM-dd", currentDate),
+            text: todo.text,
+            color: list?.color ?? "brand.500",
+            groupTitle: list?.name,
+          } as CalendarEvent
+        })}
     />
   )
 }

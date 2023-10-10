@@ -6,26 +6,36 @@ import { v4 } from "uuid"
 import { format } from "date-fns"
 
 export const DevAPIServiceAdapter: APIServiceAdapter = {
-  getTodos: function (list: string): Promise<Todo[]> {
+  getTodos: function (listName: string): Promise<Todo[]> {
     if (typeof window === "undefined") {
       return Promise.resolve([])
     }
 
     const todos: Todo[] = JSON.parse(localStorage.getItem("todos") ?? "[]")
 
-    return Promise.resolve(
-      list === "all" ? todos : todos.filter((todo) => todo.list === list),
-    )
+    const lists: List[] = JSON.parse(localStorage.getItem("lists") ?? "[]")
+    const list: List | undefined = lists.find((x) => x.name === listName)
+
+    return listName !== "all" && !list
+      ? Promise.reject()
+      : Promise.resolve(
+          listName === "all"
+            ? todos
+            : todos.filter((todo) => todo.listId === list?.id),
+        )
   },
 
   createTodo: function ({
-    list,
+    listName,
     body,
   }: {
-    list?: string
+    listName?: string
     body: Partial<Todo>
   }): Promise<Todo> {
     const now = getCurrentDate()
+
+    const lists: List[] = JSON.parse(localStorage.getItem("lists") ?? "[]")
+    const list: List | undefined = lists.find((x) => x.name === listName)
 
     const todo: Todo = {
       id: v4(),
@@ -33,7 +43,7 @@ export const DevAPIServiceAdapter: APIServiceAdapter = {
       text: body.text ?? "",
       createdAt: format(now, "yyyy-MM-dd"),
       dueAt: body.dueAt ?? undefined,
-      list: list,
+      listId: list?.id ?? undefined,
     }
 
     const todos: Todo[] = JSON.parse(localStorage.getItem("todos") ?? "[]")
@@ -43,13 +53,7 @@ export const DevAPIServiceAdapter: APIServiceAdapter = {
     return Promise.resolve(todo)
   },
 
-  updateTodo: function ({
-    list,
-    body,
-  }: {
-    list?: string
-    body: Partial<Todo>
-  }): Promise<Todo> {
+  updateTodo: function ({ body }: { body: Partial<Todo> }): Promise<Todo> {
     let updatedTodo = undefined
 
     const todos: Todo[] = JSON.parse(localStorage.getItem("todos") ?? "[]").map(
@@ -78,6 +82,28 @@ export const DevAPIServiceAdapter: APIServiceAdapter = {
     return Promise.resolve(lists)
   },
 
+  deleteTodo: function ({ id }: { id: string }): Promise<Todo> {
+    let deletedTodo: Todo | undefined = undefined
+
+    const todos: Todo[] = JSON.parse(
+      localStorage.getItem("todos") ?? "[]",
+    ).filter((todo: Todo) => {
+      if (todo.id === id) {
+        deletedTodo = todo
+      }
+
+      return Boolean(todo.id !== id)
+    })
+
+    localStorage.setItem("todos", JSON.stringify(todos))
+
+    if (deletedTodo) {
+      return Promise.resolve(deletedTodo)
+    }
+
+    return Promise.reject()
+  },
+
   createList: function ({ body }: { body: Partial<List> }): Promise<List> {
     const now = getCurrentDate()
 
@@ -93,5 +119,58 @@ export const DevAPIServiceAdapter: APIServiceAdapter = {
     localStorage.setItem("lists", JSON.stringify([...lists, list]))
 
     return Promise.resolve(list)
+  },
+
+  updateList: function ({ body }: { body: Partial<List> }): Promise<List> {
+    let updatedList = undefined
+
+    const lists: List[] = JSON.parse(localStorage.getItem("lists") ?? "[]").map(
+      (list: List) => {
+        if (list.id === body.id) {
+          updatedList = { ...list, ...body }
+          return updatedList
+        }
+
+        return list
+      },
+    )
+
+    localStorage.setItem("lists", JSON.stringify(lists))
+
+    if (updatedList) {
+      return Promise.resolve(updatedList)
+    }
+
+    return Promise.reject()
+  },
+
+  deleteList: function ({ id }: { id: string }): Promise<List> {
+    let deletedList: List | undefined = undefined
+
+    const lists: List[] = JSON.parse(
+      localStorage.getItem("lists") ?? "[]",
+    ).filter((list: List) => {
+      if (list.id === id) {
+        deletedList = list
+      }
+
+      return Boolean(list.id !== id)
+    })
+
+    localStorage.setItem("lists", JSON.stringify(lists))
+
+    if (deletedList) {
+      const todos: Todo[] = JSON.parse(
+        localStorage.getItem("todos") ?? "[]",
+      ).filter((todo: Todo) => {
+        return Boolean(todo.listId !== id)
+      })
+
+      localStorage.setItem("todos", JSON.stringify(todos))
+
+      return Promise.resolve(deletedList)
+    }
+
+    return Promise.reject()
   },
 }

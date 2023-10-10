@@ -4,5 +4,5 @@ export interface Todo {
   text: string
   createdAt: string
   dueAt?: string
-  list?: string
+  listId?: string
 }

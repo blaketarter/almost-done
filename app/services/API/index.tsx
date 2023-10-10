@@ -8,10 +8,16 @@ import { DevAPIServiceAdapter } from "./adapters/dev"
 
 export interface APIServiceAdapter {
   getTodos(list: string): Promise<Todo[]>
-  createTodo(variables: { list?: string; body: Partial<Todo> }): Promise<Todo>
-  updateTodo(variables: { list?: string; body: Partial<Todo> }): Promise<Todo>
+  createTodo(variables: {
+    listName?: string
+    body: Partial<Todo>
+  }): Promise<Todo>
+  updateTodo(variables: { body: Partial<Todo> }): Promise<Todo>
+  deleteTodo(variables: { id: string }): Promise<Todo>
   getLists(list: string): Promise<List[]>
   createList(variables: { body: Partial<List> }): Promise<List>
+  updateList(variables: { body: Partial<List> }): Promise<List>
+  deleteList(variables: { id: string }): Promise<List>
 }
 
 export class APIService {
@@ -24,7 +30,10 @@ export class APIService {
     this.createTodo = this.createTodo.bind(this)
     this.updateTodo = this.updateTodo.bind(this)
     this.getLists = this.getLists.bind(this)
+    this.deleteTodo = this.deleteTodo.bind(this)
     this.createList = this.createList.bind(this)
+    this.updateList = this.updateList.bind(this)
+    this.deleteList = this.deleteList.bind(this)
   }
 
   getTodos(context: QueryFunctionContext) {
@@ -34,11 +43,11 @@ export class APIService {
     return this.adapater.getTodos(list)
   }
 
-  createTodo(variables: { list?: string; body: Partial<Todo> }) {
+  createTodo(variables: { listName?: string; body: Partial<Todo> }) {
     return this.adapater.createTodo(variables)
   }
 
-  updateTodo(variables: { list?: string; body: Partial<Todo> }) {
+  updateTodo(variables: { body: Partial<Todo> }) {
     return this.adapater.updateTodo(variables)
   }
 
@@ -49,8 +58,20 @@ export class APIService {
     return this.adapater.getLists(list)
   }
 
+  deleteTodo(variables: { id: string }) {
+    return this.adapater.deleteTodo(variables)
+  }
+
   createList(variables: { body: Partial<List> }) {
     return this.adapater.createList(variables)
+  }
+
+  updateList(variables: { body: Partial<List> }) {
+    return this.adapater.updateList(variables)
+  }
+
+  deleteList(variables: { id: string }) {
+    return this.adapater.deleteList(variables)
   }
 }
 

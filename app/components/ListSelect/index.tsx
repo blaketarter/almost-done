@@ -2,7 +2,6 @@ import apiService from "@/app/services/API"
 import { List } from "@/app/types/List"
 import { Box, SelectProps } from "@chakra-ui/react"
 import { useQuery } from "@tanstack/react-query"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { DarkSelect } from "../Select"
 
 interface ListSelectProps extends SelectProps {

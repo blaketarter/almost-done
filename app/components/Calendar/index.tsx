@@ -164,6 +164,8 @@ const generateDatesForCurrentWeek = ({
         return (
           <GridItem
             background={isToday ? "offWhite" : "white"}
+            border={isToday ? "1px solid" : "initial"}
+            borderColor="brand.500"
             position="relative"
             key={day}
             display="flex"
@@ -175,6 +177,7 @@ const generateDatesForCurrentWeek = ({
           >
             <Box position="absolute" top="8px" left="8px">
               <TypographyText
+                color={isToday ? "brand.500" : "black"}
                 variant="bodyLarge"
                 fontWeight={isToday ? 600 : 400}
                 fontSize="32px"

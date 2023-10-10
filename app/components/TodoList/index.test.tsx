@@ -4,7 +4,7 @@ import { render, screen } from "@/app/utils/testUtils"
 describe("TodoList", () => {
   it("renders", () => {
     // Arrange
-    const list = "foo"
+    const list = { id: "0", name: "foo" }
     const todos = [
       {
         id: "1",
@@ -16,7 +16,13 @@ describe("TodoList", () => {
     ]
 
     // Act
-    render(<TodoList list={list} todos={todos} />)
+    render(
+      <TodoList
+        list={list}
+        todos={todos}
+        activeDate={new Date("2023/01/01")}
+      />,
+    )
 
     // Assert
     expect(screen.getByText("foo")).toBeInTheDocument()

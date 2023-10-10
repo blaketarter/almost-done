@@ -7,21 +7,17 @@ import { useQuery } from "@tanstack/react-query"
 import apiService from "@/app/services/API"
 import Card from "../Card"
 import { List } from "@/app/types/List"
-import { useMemo } from "react"
 import { isSameMonth, parse } from "date-fns"
 import calendarService from "@/app/services/Calendar"
-import { useCurrentDate } from "@/app/utils/useCalendarDates"
+import { useActiveDate, useCurrentDate } from "@/app/utils/useCalendarDates"
+import { act } from "react-dom/test-utils"
 
 interface TodoListsParams {
   list?: string
 }
 
 export default function TodoLists({ list = "all" }: TodoListsParams) {
-  const currentDate = useCurrentDate()
-  const { data: activeDate } = useQuery<Date>({
-    queryKey: ["activeDate"],
-    queryFn: calendarService.getActiveDate,
-  })
+  const [activeDate] = useActiveDate()
   const { data } = useQuery<Todo[]>({
     queryKey: ["todos", list],
     queryFn: apiService.getTodos,
@@ -32,42 +28,31 @@ export default function TodoLists({ list = "all" }: TodoListsParams) {
     queryFn: apiService.getLists,
   })
 
-  const filteredTodos = data?.filter((todo) => {
-    if (todo.dueAt === undefined) {
-      return true
-    }
-
-    const dueAt = parse(todo.dueAt ?? "", "yyyy-MM-dd", currentDate)
-
-    if (activeDate !== undefined && isSameMonth(dueAt, activeDate)) {
-      return true
-    }
-
-    return false
-  })
-
-  const todos = groupBy(filteredTodos ?? [], "list")
-  const listColor = useMemo(
-    () => (lists ?? []).find((maybeList) => maybeList.name === list)?.color,
-    [lists, list],
-  )
+  const todos = groupBy(data ?? [], "listId")
+  const singleList = lists?.find((x) => x.name === list)
 
   return (
     <Card flexBasis="100%" overflowY="auto">
       {list === "all" ? (
-        <VStack w="100%">
-          {(lists ?? []).map((list) => (
-            <TodoList
-              key={list.name}
-              list={list.name}
-              color={list.color}
-              todos={todos[list.name] ?? []}
-            />
-          ))}
+        <VStack w="100%" flexDirection="column-reverse">
+          {(lists ?? [])
+            .map((list) => (
+              <TodoList
+                key={list.id}
+                list={list}
+                todos={todos[list.id] ?? []}
+                activeDate={activeDate}
+              />
+            ))
+            .reverse()}
         </VStack>
-      ) : (
-        <TodoList list={list} color={listColor} todos={filteredTodos ?? []} />
-      )}
+      ) : singleList ? (
+        <TodoList
+          list={singleList}
+          todos={data ?? []}
+          activeDate={activeDate}
+        />
+      ) : null}
     </Card>
   )
 }

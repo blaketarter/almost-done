@@ -18,6 +18,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
+    list: { id: "0", name: "foo" },
     todos: [
       {
         id: "1",

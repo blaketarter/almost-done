@@ -11,7 +11,7 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
         text: "Foo 1",
         createdAt: "2023-01-01",
         dueAt: "2023-01-01",
-        list: "foo",
+        listId: "1",
       },
       {
         id: "2",
@@ -19,7 +19,7 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
         text: "Foo 2",
         createdAt: "2023-01-01",
         dueAt: "2023-01-01",
-        list: "foo",
+        listId: "1",
       },
     ]
     const bars = [
@@ -29,7 +29,7 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
         text: "Bar 1",
         createdAt: "2023-01-01",
         dueAt: "2023-01-01",
-        list: "bar",
+        listId: "2",
       },
     ]
     return Promise.resolve(
@@ -50,7 +50,7 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
       text: "Foo 2",
       createdAt: "2023-01-01",
       dueAt: "2023-01-01",
-      list: "foo",
+      listId: "1",
     })
   },
 
@@ -67,7 +67,7 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
       text: "Foo 2",
       createdAt: "2023-01-01",
       dueAt: "2023-01-01",
-      list: "foo",
+      listId: "1",
     })
   },
 
@@ -78,7 +78,36 @@ export const TestAPIServiceAdapter: APIServiceAdapter = {
     ])
   },
 
+  deleteTodo: function (): Promise<Todo> {
+    return Promise.resolve({
+      id: "2",
+      isComplete: false,
+      text: "Foo 2",
+      createdAt: "2023-01-01",
+      dueAt: "2023-01-01",
+      listId: "1",
+    })
+  },
+
   createList: function (): Promise<List> {
+    return Promise.resolve({
+      id: "3",
+      name: "baz",
+      createdAt: "2023-01-01",
+      color: "#107DFD",
+    })
+  },
+
+  updateList: function (): Promise<List> {
+    return Promise.resolve({
+      id: "3",
+      name: "baz",
+      createdAt: "2023-01-01",
+      color: "#107DFD",
+    })
+  },
+
+  deleteList: function (): Promise<List> {
     return Promise.resolve({
       id: "3",
       name: "baz",

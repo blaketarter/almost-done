@@ -1,68 +1,100 @@
 "use client"
 import { Todo } from "@/app/types/Todo"
 import TodoItem from "../TodoItem"
-import { Box, Flex, Heading, Input, VStack } from "@chakra-ui/react"
-import { FormEvent, useCallback, useMemo, useRef, useState } from "react"
+import { VStack } from "@chakra-ui/react"
+import { useCallback, useMemo, useRef } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import apiFunction from "@/app/services/API"
 import Card from "../Card"
 import { useCurrentDate } from "@/app/utils/useCalendarDates"
+import TodoListHeader from "../TodoListHeader"
+import { List } from "@/app/types/List"
+import { isSameMonth, parse } from "date-fns"
+import { TypographyText } from "../Typography"
 
 interface TodoListParams {
-  list?: string
+  list: List
   todos: Todo[]
-  color?: string
+  activeDate?: Date
 }
 
-export default function TodoList({ list, todos, color }: TodoListParams) {
+export default function TodoList({ list, todos, activeDate }: TodoListParams) {
   const currentDate = useCurrentDate()
-  const textRef = useRef<HTMLInputElement | null>(null)
   const queryClient = useQueryClient()
-  const createTodoMutation = useMutation({
-    mutationFn: apiFunction.createTodo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] })
-    },
-  })
   const updateTodoMutation = useMutation({
     mutationFn: apiFunction.updateTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] })
     },
   })
-
-  const onSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-
-      const data = new FormData(e.target as HTMLFormElement)
-
-      const newTodo: Partial<Todo> = {
-        isComplete: false,
-        text: (data.get("text") as string) ?? "",
-        createdAt: currentDate.toString(),
-      }
-
-      createTodoMutation.mutateAsync({ list, body: newTodo }).then(() => {
-        if (textRef.current) {
-          textRef.current.value = ""
-        }
-      })
+  const deleteTodoMutation = useMutation({
+    mutationFn: apiFunction.deleteTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] })
     },
-    [createTodoMutation, list, currentDate],
+  })
+  const updateListMutation = useMutation({
+    mutationFn: apiFunction.updateList,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["lists"] })
+    },
+  })
+  const deleteListMutation = useMutation({
+    mutationFn: apiFunction.deleteList,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["lists"] })
+      queryClient.invalidateQueries({ queryKey: ["todos"] })
+    },
+  })
+
+  const onTaskChange = useCallback(
+    (updatedTodo: Todo) => {
+      updateTodoMutation.mutate({ body: updatedTodo })
+    },
+    [updateTodoMutation],
   )
+
+  const onTaskDelete = useCallback(
+    (todoToDelete: Todo) => {
+      deleteTodoMutation.mutate({ id: todoToDelete.id })
+    },
+    [deleteTodoMutation],
+  )
+
+  const onListChange = useCallback(
+    (updatedList: List) => {
+      updateListMutation.mutate({ body: updatedList })
+    },
+    [updateListMutation],
+  )
+
+  const onListDelete = useCallback(
+    (listToDelete: List) => {
+      deleteListMutation.mutate({ id: listToDelete.id })
+    },
+    [deleteListMutation],
+  )
+
+  const filteredTodos = todos?.filter((todo) => {
+    if (todo.dueAt === undefined) {
+      return true
+    }
+
+    const dueAt = parse(todo.dueAt ?? "", "yyyy-MM-dd", currentDate)
+
+    if (activeDate !== undefined && isSameMonth(dueAt, activeDate)) {
+      return true
+    }
+
+    return false
+  })
 
   const incompleteTodos = useMemo(
-    () => todos.filter((todo) => !todo.isComplete).length,
-    [todos],
+    () => filteredTodos.filter((todo) => !todo.isComplete).length,
+    [filteredTodos],
   )
 
-  const onChange = useCallback(
-    (updatedTodo: Todo) => {
-      updateTodoMutation.mutate({ list, body: updatedTodo })
-    },
-    [list, updateTodoMutation],
-  )
+  const hiddenTodos = todos.length - filteredTodos.length
 
   return (
     <VStack w="100%" mb="34px">
@@ -74,30 +106,33 @@ export default function TodoList({ list, todos, color }: TodoListParams) {
         top="0"
         zIndex="5"
       >
-        <Heading w="100%" as="h3" size="lg" data-testid={"heading-" + list}>
-          <Box
-            as="span"
-            mr="16px"
-            h="28px"
-            w="28px"
-            borderRadius="6px"
-            fontSize="18px"
-            fontWeight="600"
-            display="inline-flex"
-            color="white.500"
-            background={color ? color : "brand.500"}
-            alignItems="center"
-            justifyContent="center"
-            transform="translateY(-4px)"
-          >
-            {incompleteTodos}
-          </Box>
-          {list}
-        </Heading>
+        <TodoListHeader
+          list={list}
+          incompleteTodos={incompleteTodos}
+          onChange={onListChange}
+          onDelete={onListDelete}
+        />
       </Card>
-      {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} onChange={onChange} />
+      {filteredTodos.map((todo) => (
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+          onChange={onTaskChange}
+          onDelete={onTaskDelete}
+        />
       ))}
+      {hiddenTodos ? (
+        <TypographyText
+          variant="label"
+          fontSize="12px"
+          color="black"
+          w="100%"
+          mt="8px"
+          opacity={0.6}
+        >
+          + {hiddenTodos} task{hiddenTodos !== 1 ? "s" : ""} not due this month
+        </TypographyText>
+      ) : null}
     </VStack>
   )
 }

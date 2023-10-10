@@ -38,15 +38,16 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
         isComplete: false,
         text: (data.get("text") as string) ?? "",
         dueAt: dueAt ? format(dueAt, "yyyy-MM-dd") : undefined,
-        list: list,
       }
 
-      createTodoMutation.mutateAsync({ list, body: newTodo }).then(() => {
-        if (textRef.current) {
-          textRef.current.value = ""
-        }
-        onSuccess?.()
-      })
+      createTodoMutation
+        .mutateAsync({ listName: list, body: newTodo })
+        .then(() => {
+          if (textRef.current) {
+            textRef.current.value = ""
+          }
+          onSuccess?.()
+        })
     },
     [createTodoMutation, currentDate, list, onSuccess],
   )
