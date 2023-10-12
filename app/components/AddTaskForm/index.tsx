@@ -62,7 +62,7 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
             name="text"
             w="280px"
           />
-          <DarkButton flexGrow="1" type="submit">
+          <DarkButton flexGrow="1" type="submit" isDisabled={!list}>
             Add
           </DarkButton>
         </HStack>

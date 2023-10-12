@@ -24,7 +24,7 @@ export default function ListSelect({
       <DarkSelect aria-label="List" {...props}>
         {defaultToAll ? (
           <option key="option-all" value="all" data-testid="option-all">
-            all
+            All
           </option>
         ) : (
           <option value="" disabled selected>

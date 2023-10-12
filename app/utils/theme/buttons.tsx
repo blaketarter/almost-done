@@ -6,6 +6,9 @@ const lightPrimary = defineStyle({
 
   _hover: {
     background: "white.800",
+    _disabled: {
+      background: "trueWhite",
+    },
   },
 })
 
@@ -15,6 +18,9 @@ const darkPrimary = defineStyle({
 
   _hover: {
     background: "black.800",
+    _disabled: {
+      background: "black.500",
+    },
   },
 })
 
@@ -24,6 +30,9 @@ const brandPrimary = defineStyle({
 
   _hover: {
     background: "brand.100",
+    _disabled: {
+      background: "brand.500",
+    },
   },
 })
 
@@ -36,6 +45,12 @@ const fobPrimary = defineStyle({
 
   _hover: {
     background: "brand.100",
+  },
+
+  _disabled: {
+    _hover: {
+      background: "brand.500",
+    },
   },
 })
 

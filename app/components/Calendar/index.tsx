@@ -177,7 +177,7 @@ const generateDatesForCurrentWeek = ({
           >
             <Box position="absolute" top="8px" left="8px">
               <TypographyText
-                color={isToday ? "brand.500" : "black"}
+                color={isToday ? "brand.500" : undefined}
                 variant="bodyLarge"
                 fontWeight={isToday ? 600 : 400}
                 fontSize="32px"

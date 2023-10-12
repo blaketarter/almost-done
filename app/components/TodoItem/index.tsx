@@ -89,6 +89,7 @@ export default function TodoItem({ todo, onChange, onDelete }: TodoProps) {
                     onChange?.({ ...todo, text: newText, dueAt: newDueDate })
                     setIsEditing(null)
                   }}
+                  aria-label="Save Changes"
                 />
                 <CloseIcon
                   cursor="pointer"
@@ -97,6 +98,7 @@ export default function TodoItem({ todo, onChange, onDelete }: TodoProps) {
                     setNewDueDate(todo.dueAt)
                     setNewText(todo.text)
                   }}
+                  aria-label="Discard Changes"
                 />
               </>
             ) : (
@@ -104,10 +106,12 @@ export default function TodoItem({ todo, onChange, onDelete }: TodoProps) {
                 <EditIcon
                   onClick={() => setIsEditing("text")}
                   cursor={!todo.isComplete ? "pointer" : undefined}
+                  aria-label="Edit Task"
                 />
                 <DeleteIcon
                   cursor={!todo.isComplete ? "pointer" : undefined}
                   onClick={() => setIsDeleting(true)}
+                  aria-label="Delete Task"
                 />
                 <Card
                   position="absolute"

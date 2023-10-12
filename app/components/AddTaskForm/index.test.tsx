@@ -28,7 +28,7 @@ describe("AddTaskForm", () => {
 
     await userEvent.type(input, "Test Task")
     await userEvent.click(select)
-    await userEvent.click(screen.getByText("foo"))
+    await userEvent.selectOptions(screen.getByLabelText("Task list"), "foo")
     await userEvent.click(button)
 
     // Assert

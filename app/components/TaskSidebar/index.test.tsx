@@ -23,7 +23,7 @@ describe("TaskSidebar", () => {
     )
 
     // Assert
-    expect(screen.getByText("all")).toBeInTheDocument()
+    expect(screen.getByText("All")).toBeInTheDocument()
     expect(screen.getByTestId("heading-foo")).toHaveTextContent("foo")
     expect(screen.getByText("Foo 1")).toBeInTheDocument()
   })
