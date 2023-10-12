@@ -6,4 +6,4 @@ This was mainly a project to play around with some new libraries and some new UI
 
 The idea behind the app is to be a simple Todo style app with the added functionality of assigning due dates and seeing the calendar with upcoming items that are due all in one view. It has the ability to seperate tasks into their own lists to help with organizing types of tasks.
 
-![example image](./images/demo-video.mov)
+https://github.com/blaketarter/almost-done/assets/6101761/b779408a-5c36-47df-9e1a-e68efbfd59e0
