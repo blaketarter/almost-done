@@ -4,8 +4,9 @@ import Providers from "./components/Providers"
 import font from "@/app/utils/font"
 
 export const metadata: Metadata = {
-  title: "Todo Calendar App",
-  description: "WIP",
+  title: "Almost Done | Calendar-centric Task App",
+  description:
+    "Almost Done is a calendar-centric task app that is simple to use.",
 }
 
 export default function RootLayout({

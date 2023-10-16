@@ -7,6 +7,7 @@ interface DashboardPageProps {
 
 export default function DashboardPage({ searchParams }: DashboardPageProps) {
   const list = searchParams?.list ?? "all"
+
   return (
     <HydratedTodos list={list}>
       <Dashboard list={list} />

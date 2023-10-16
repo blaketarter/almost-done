@@ -29,7 +29,7 @@ describe("Dashboard", () => {
     expect(
       screen.getByText(
         (_, element) =>
-          element?.textContent === "Almost done with 3 tasks this month",
+          element?.textContent === "You're almost done with 3 tasks this month",
       ),
     ).toBeInTheDocument()
     expect(screen.getByLabelText("foo events due today")).toHaveTextContent("2")
