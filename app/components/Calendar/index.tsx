@@ -41,14 +41,14 @@ const getHeader = ({
   )
   return (
     <Flex gap="14px" dir="row" mb="22px">
-      <Card h="84px" flexShrink="0" flexBasis="350px">
+      <Card h="84px" flexShrink="0" flexBasis="360px">
         <VStack spacing="0" alignItems="flex-start" h="100%">
           <TypographyText variant="bodyLarge" fontWeight="400">
             Today is <strong>{format(currentDate, "MMMM dd, yyyy")}</strong>
           </TypographyText>
           <TypographyText variant="label" fontWeight="400">
-            Almost done with <strong>{currentDateEvents.length}</strong> tasks
-            this month
+            You&apos;re almost done with{" "}
+            <strong>{currentDateEvents.length}</strong> tasks this month
           </TypographyText>
         </VStack>
       </Card>

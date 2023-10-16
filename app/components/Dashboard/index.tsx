@@ -2,12 +2,15 @@
 import { Box, HStack } from "@chakra-ui/react"
 import TodoCalendar from "../TodoCalendar"
 import TaskSidebar from "../TaskSidebar"
+import useDemoData from "@/app/utils/useDemoData"
 
 interface DashboardProps {
   list: string
 }
 
 export default function Dashboard({ list }: DashboardProps) {
+  useDemoData()
+
   return (
     <HStack w="100%" p="30px" gap="30px" alignItems="flex-start" h="100vh">
       <Box as="section" w="calc(100%*1/3)" h="100%" flexShrink="0">
