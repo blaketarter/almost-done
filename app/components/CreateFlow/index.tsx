@@ -5,20 +5,42 @@ import Card from "../Card"
 import AddTaskForm from "../AddTaskForm"
 import AddListForm from "../AddListForm"
 import { useState } from "react"
+import { Todo } from "@/app/types/Todo"
 
-export default function CreateFlow() {
+interface CreateFlowProps {
+  onOpen?: () => unknown
+  onClose?: () => unknown
+  hideTaskFlow?: boolean
+  hideListFlow?: boolean
+  defaultTaskValues?: Partial<Todo>
+}
+
+export default function CreateFlow({
+  onClose,
+  onOpen,
+  hideTaskFlow,
+  hideListFlow,
+  defaultTaskValues,
+}: CreateFlowProps) {
   const [modeSelect, setModeSelect] = useState(false)
   const [mode, setMode] = useState<"task" | "list" | null>(null)
 
   return (
     <Box position="relative">
       <FobButton
-        zIndex="10"
         onClick={() => {
           if (typeof mode === "string") {
             setMode(null)
+            onClose?.()
           } else {
-            setModeSelect((state) => !state)
+            if (hideTaskFlow) {
+              setMode("list")
+            } else if (hideListFlow) {
+              setMode("task")
+            } else {
+              setModeSelect((state) => !state)
+            }
+            onOpen?.()
           }
         }}
       >
@@ -49,6 +71,7 @@ export default function CreateFlow() {
         opacity={modeSelect || typeof mode === "string" ? "1" : "0"}
         userSelect={modeSelect || typeof mode === "string" ? "auto" : "none"}
         overflow="hidden"
+        padding={modeSelect || typeof mode === "string" ? "14px" : "0"}
       >
         <>
           {modeSelect === true ? (
@@ -76,13 +99,16 @@ export default function CreateFlow() {
             <AddTaskForm
               onSuccess={() => {
                 setMode(null)
+                onClose?.()
               }}
+              defaultTaskValues={defaultTaskValues}
             />
           ) : null}
           {mode === "list" ? (
             <AddListForm
               onSuccess={() => {
                 setMode(null)
+                onClose?.()
               }}
             />
           ) : null}

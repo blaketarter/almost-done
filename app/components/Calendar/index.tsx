@@ -14,16 +14,13 @@ import {
 } from "date-fns"
 import { Fragment } from "react"
 import { TriangleUpIcon } from "@chakra-ui/icons"
-import classNames from "classnames"
-import { Box, Flex, Grid, GridItem, HStack, VStack } from "@chakra-ui/react"
-import styles from "./index.module.css"
+import { Flex, Grid, GridItem, HStack, VStack } from "@chakra-ui/react"
 import { CalendarEvent } from "@/app/types/CalendarEvent"
 import { LightButton } from "../Button"
 import { TypographyHeading, TypographyText } from "../Typography"
 import Card from "../Card"
 import { useActiveDate, useCurrentDate } from "@/app/utils/useCalendarDates"
-import groupBy from "lodash/groupBy"
-import Tooltip from "../Tooltip"
+import CalendarDay from "../CalendarDay"
 
 const getHeader = ({
   activeDate,
@@ -162,66 +159,13 @@ const generateDatesForCurrentWeek = ({
         const isToday = isSameDay(dateToRender, currentDate)
 
         return (
-          <GridItem
-            background={isToday ? "offWhite" : "white"}
-            border={isToday ? "1px solid" : "initial"}
-            borderColor="brand.500"
-            position="relative"
-            key={day}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            className={classNames("day", {
-              [styles.inactiveDay]: !isSameMonth(dateToRender, activeDate),
-            })}
-          >
-            <Box position="absolute" top="8px" left="8px">
-              <TypographyText
-                color={isToday ? "brand.500" : undefined}
-                variant="bodyLarge"
-                fontWeight={isToday ? 600 : 400}
-                fontSize="32px"
-              >
-                {format(dateToRender, "d")}
-              </TypographyText>
-            </Box>
-            <HStack position="absolute" bottom="8px" right="8px">
-              {dateToRenderEvents.length
-                ? Object.entries(groupBy(dateToRenderEvents, "color")).map(
-                    ([color, eventsToRender]) =>
-                      eventsToRender.length ? (
-                        <Tooltip
-                          key={color}
-                          text={eventsToRender.reduce(
-                            (text, event) => text + "\n" + event.text,
-                            "",
-                          )}
-                        >
-                          <Box
-                            aria-label={
-                              (eventsToRender[0]?.groupTitle
-                                ? eventsToRender[0]?.groupTitle + " events"
-                                : "Events") + " due today"
-                            }
-                            background={color ?? "brand.500"}
-                            h="18px"
-                            w="18px"
-                            color="white"
-                            borderRadius="50%"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            fontSize="8px"
-                            data-testid="events"
-                          >
-                            {eventsToRender.length}
-                          </Box>
-                        </Tooltip>
-                      ) : null,
-                  )
-                : null}
-            </HStack>
-          </GridItem>
+          <CalendarDay
+            key={format(dateToRender, "yyyy-MM-dd")}
+            isToday={isToday}
+            date={dateToRender}
+            isActive={isSameMonth(dateToRender, activeDate)}
+            events={dateToRenderEvents}
+          />
         )
       })}
     </>
