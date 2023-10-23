@@ -4,7 +4,7 @@ import { AddIcon } from "@chakra-ui/icons"
 import Card from "../Card"
 import AddTaskForm from "../AddTaskForm"
 import AddListForm from "../AddListForm"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Todo } from "@/app/types/Todo"
 
 interface CreateFlowProps {
@@ -24,9 +24,33 @@ export default function CreateFlow({
 }: CreateFlowProps) {
   const [modeSelect, setModeSelect] = useState(false)
   const [mode, setMode] = useState<"task" | "list" | null>(null)
+  const [xSide, setXSide] = useState<"right" | "left">("right")
+  const [ySide, setYSide] = useState<"top" | "bottom">("bottom")
+  const ref = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    function handleResize() {
+      if (ref.current) {
+        const rect = ref.current.getBoundingClientRect()
+        if (window.innerWidth - rect.x < 500) {
+          setXSide("left")
+        }
+        if (window.innerHeight - rect.y < 200) {
+          setYSide("top")
+        }
+      }
+    }
+
+    window.addEventListener("resize", handleResize)
+    handleResize()
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [])
 
   return (
-    <Box position="relative">
+    <Box position="relative" ref={ref}>
       <FobButton
         onClick={() => {
           if (typeof mode === "string") {
@@ -55,8 +79,10 @@ export default function CreateFlow({
       </FobButton>
       <Card
         position="absolute"
-        top="60px"
-        left="0"
+        top={ySide === "bottom" ? "60px" : undefined}
+        bottom={ySide === "top" ? "60px" : undefined}
+        left={xSide === "right" ? "0" : undefined}
+        right={xSide === "left" ? "0" : undefined}
         zIndex="1000"
         background="white"
         transition="width .5s ease, height .25s ease, opacity .2s ease"
