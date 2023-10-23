@@ -10,9 +10,13 @@ import { format, parse } from "date-fns"
 
 interface AddTaskFormProps {
   onSuccess?: () => unknown
+  defaultTaskValues?: Partial<Todo>
 }
 
-export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
+export default function AddTaskForm({
+  onSuccess,
+  defaultTaskValues,
+}: AddTaskFormProps) {
   const textRef = useRef<HTMLInputElement | null>(null)
   const queryClient = useQueryClient()
   const createTodoMutation = useMutation({
@@ -23,7 +27,9 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
   })
   const currentDate = useCurrentDate()
 
-  const [list, setList] = useState<string | undefined>(undefined)
+  const [list, setList] = useState<string | undefined>(
+    defaultTaskValues?.listId ?? undefined,
+  )
 
   const onSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
@@ -61,13 +67,19 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
             aria-label="Task name"
             name="text"
             w="280px"
+            defaultValue={defaultTaskValues?.text}
           />
           <DarkButton flexGrow="1" type="submit" isDisabled={!list}>
             Add
           </DarkButton>
         </HStack>
         <HStack w="100%">
-          <Input type="date" aria-label="Task due date" name="dueAt" />
+          <Input
+            type="date"
+            aria-label="Task due date"
+            name="dueAt"
+            defaultValue={defaultTaskValues?.dueAt}
+          />
           <ListSelect
             defaultToAll={false}
             placeholder="Assign list"
